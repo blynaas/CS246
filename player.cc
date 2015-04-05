@@ -10,6 +10,25 @@ Player *Player::pc=0;
 void Player::cleanup() {delete pc;}
 void Player::setPlayer(Player *p) {pc=p; atexit (cleanup);}
 Player *Player::getPlayer() {return pc;}
+Player *Player::getPlayer(string race)
+{
+	if (race == "h")
+	{
+		pc = new Human();
+	}
+	else if (race == "d")
+	{	
+		pc = new Dwarf();
+	}
+	else if (race == "e")
+	{
+		pc = new Elf();
+	}
+	else if (race == "o")
+	{
+		pc = new Orc();
+	}
+}
 
 //Public part
 Player::Player(int hp, int atk, int def, string race) :
@@ -44,7 +63,7 @@ void Player::clear()
 {
 }
 
-int Player::attack(Enemy* e) const
+int Player::attack(Enemy* e)
 {
 	double defense = e->getDef();
 
@@ -59,3 +78,12 @@ Player::~Player() {}
 
 Human::Human() : Player(140, 20, 20, "Human"){}
 Human::~Human(){}
+
+Dwarf::Dwarf(): Player(100, 20, 30, "Dwarf"){}
+Dwarf::~Dwarf(){}
+
+Elf::Elf(): Player(140, 30, 10, "Elf"){}
+Elf::~Elf(){}
+
+Orc::Orc(): Player(180, 30, 25, "Orc"){}
+Orc::~Orc(){}

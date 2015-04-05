@@ -18,6 +18,7 @@ class Player : public Character {
 	
 	public:
 	static Player *getPlayer(); //singleton
+	static Player *getPlayer(std::string race);
 	static void setPlayer(Player *p); //singleton
 
 	virtual void addGold(int i); //half for orc;;double for dwarf
@@ -37,7 +38,7 @@ class Player : public Character {
 	void clear(); //used when player go to the next floor
 	int getAtk() const; //atk+exAtk
 	int getDef() const; //def+exDef
-	int attack(Enemy* e) const;
+	int attack(Enemy* e);
 	virtual ~Player()=0;
 };
 
@@ -45,6 +46,24 @@ class Human : public Player {
 	public:
 	Human(); //140HP, 20Atk, 20Def
 	~Human();
+};
+
+class Dwarf : public Player {
+	public:
+		Dwarf(); //100HP, 20Atk 30Def
+		~Dwarf();
+};
+
+class Elf : public Player {
+	public:
+		Elf(); // 140HP, 30Atk, 10Def
+		~Elf();
+};
+
+class Orc : public Player {
+	public:
+		Orc();// 180HP, 30Atk, 25Def
+		~Orc();
 };
 
 #endif

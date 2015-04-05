@@ -19,9 +19,13 @@ int main(int argc,char *argv[])
 		Player *pc = 0;
 		string s;
 
-		pc = new Human();
+		cout << "enter h, d, e, or o for human, dwarf, elf, or orc" << endl;
+
+		cin >> s;
+
+		pc = Player::getPlayer(s);
+
 		cout << "game start!" << endl;
-		Player::setPlayer(pc);
 
 		while(floor < 6)
 		{
