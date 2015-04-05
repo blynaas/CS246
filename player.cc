@@ -44,6 +44,17 @@ void Player::clear()
 {
 }
 
+int Player::attack(Enemy* e) const
+{
+	double defense = e->getDef();
+
+	int damage = ceil((100/(100+defense))*atk);
+
+	e->addHp((-1)*damage);
+
+	return damage;
+}
+
 Player::~Player() {}
 
 Human::Human() : Player(140, 20, 20, "Human"){}

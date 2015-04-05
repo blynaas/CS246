@@ -37,6 +37,7 @@ class Player : public Character {
 	void clear(); //used when player go to the next floor
 	int getAtk() const; //atk+exAtk
 	int getDef() const; //def+exDef
+	int attack(Enemy* e) const;
 	virtual ~Player()=0;
 };
 

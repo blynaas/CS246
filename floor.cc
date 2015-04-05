@@ -6,6 +6,7 @@
 #include <sstream>
 #include "floor.h"
 #include "textdisplay.h"
+#include <math.h>
 
 using namespace std;
 
@@ -197,8 +198,12 @@ int Floor::playerAttack(string d)
 	}
 	else if(ctmp->containsEnemy())
 	{
-		//attack it, blank for now
-		td->setAction("Attacked some nigga.");
+		int damage = Player::getPlayer()->attack(ctmp->getEnemy());
+
+		stringstream ss;
+		ss << "Attacked an enemy to the " << d << " for " << damage << ", bringing it down to " << ctmp->getEnemy()->getHp() << " health.";
+		td->setAction(ss.str());
+
 		ret = 1;
 	}
 	else
