@@ -204,6 +204,12 @@ int Floor::playerAttack(string d)
 		ss << "Attacked an enemy to the " << d << " for " << damage << ", bringing it down to " << ctmp->getEnemy()->getHp() << " health.";
 		td->setAction(ss.str());
 
+		if (ctmp->getEnemy()->getHp() == 0)
+		{
+			Enemy* e = ctmp->popEnemy();
+			delete e;
+		}
+
 		ret = 1;
 	}
 	else
@@ -212,6 +218,8 @@ int Floor::playerAttack(string d)
 	}
 
 	endTurn();
+
+	return ret;
 }
 
 Cell* Floor::getTargetCell(string d)

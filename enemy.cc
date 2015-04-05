@@ -6,7 +6,10 @@ using namespace std;
 
 Enemy::Enemy(int hp, int atk, int def, string type) : Character(hp, atk, def), type(type), movedThisTurn(false) {}
 string Enemy::getType() const {return type;}
-void Enemy::addHp(int i) {hp+=i;}
+void Enemy::addHp(int i)
+{
+	hp = max(0, hp+i);
+}
 int Enemy::getAtk() const {return atk;}
 int Enemy::getDef() const {return def;}
 int Enemy::getHp() const {return hp;}
