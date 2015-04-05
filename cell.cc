@@ -23,7 +23,7 @@ void Cell::addNeighbour(int po, Cell *neighbour) {
 
 bool Cell::containsEnemy()
 {
-	return sym == 'N';
+	return sym == 'N'; //make this not shitty later
 }
 
 Cell **Cell::getNeighbours() const {return neighbours;}
@@ -42,7 +42,7 @@ Enemy *Cell::popEnemy() {}
 
 Cell::~Cell() {delete [] neighbours;}
 
-ECell::ECell(int r, int c, string type, string name) : Cell(r, c, type, name){
+NonPathableTile::NonPathableTile(int r, int c, string type, string name) : Cell(r, c, type, name){
 	neighbours = new Cell *[maxNeighbours];
 	for(int i=0; i<maxNeighbours; i++) neighbours[i]=0;
 	if(name=="wall1") sym = '|';
@@ -51,35 +51,35 @@ ECell::ECell(int r, int c, string type, string name) : Cell(r, c, type, name){
 	//else if(type=="doorway") sym = '\'; // ASCII code: 92
 }
 
-ECell::~ECell() {}
+NonPathableTile::~NonPathableTile() {}
 
-void ECell::notifyDisplay(TextDisplay &t) {
+void NonPathableTile::notifyDisplay(TextDisplay &t) {
 	t.notify(r, c, sym);
 }
 
-Passenger::Passenger(int r, int c, string type, string name) : Cell(r, c, type, name){
+PassageTile::PassageTile(int r, int c, string type, string name) : Cell(r, c, type, name){
 	neighbours = new Cell *[maxNeighbours];
 	for(int i=0; i<maxNeighbours; i++) neighbours[i]=0;
 	if(name=="pass1") sym = '+';
 	else if(name=="pass2") sym = '#';
 }
 
-Passenger::~Passenger() {}
+PassageTile::~PassageTile() {}
 
-void Passenger::notifyDisplay(TextDisplay &t) {
+void PassageTile::notifyDisplay(TextDisplay &t) {
 	t.notify(r, c, sym);
 }
 
-void Passenger::pushPlayer(Player *p) {
+void PassageTile::pushPlayer(Player *p) {
 	this->p = p;
 	sym = '@';
 }
 
-Player *Passenger::getPlayer() const {
+Player *PassageTile::getPlayer() const {
 	return p;
 }
 
-Player *Passenger::popPlayer() {
+Player *PassageTile::popPlayer() {
 	Player *tmp = p;
 	p = 0;
 	if(name=="pass1") sym = '+';
@@ -87,7 +87,7 @@ Player *Passenger::popPlayer() {
 	return tmp;
 }
 
-Tile::Tile(int r, int c, int room) :  Cell(r, c, "T", "tile"), room(room) {
+RegularTile::RegularTile(int r, int c, int room) :  Cell(r, c, "T", "RegularTile"), room(room) {
 	sym = '.';
 	avail = true;
 	p=0;e=0;
@@ -96,29 +96,29 @@ Tile::Tile(int r, int c, int room) :  Cell(r, c, "T", "tile"), room(room) {
 	for(int j=0; j<maxNeighbours; j++) neighbours[j]=0;
 }
 
-Tile::~Tile() {delete e;}
+RegularTile::~RegularTile() {delete e;}
 
-void Tile::notifyDisplay(TextDisplay &t) {
+void RegularTile::notifyDisplay(TextDisplay &t) {
 	t.notify(r, c, sym);
 }
 
-bool Tile::available() const {return avail&&!(p||e);}
+bool RegularTile::available() const {return avail&&!(p||e);}
 
-void Tile::setDoorway() {avail = false; sym = '\\'; type = "D";}
+void RegularTile::setDoorway() {avail = false; sym = '\\'; type = "D";}
 
-char Tile::getContain() const {return contain;}
+char RegularTile::getContain() const {return contain;}
 
-int Tile::getRoom() const {return room;}
+int RegularTile::getRoom() const {return room;}
 
-void Tile::pushPlayer(Player *p) {
+void RegularTile::pushPlayer(Player *p) {
 	this->p = p;
 	sym = '@';
 	contain = sym;
 }
 
-Player *Tile::getPlayer() const {return p;}
+Player *RegularTile::getPlayer() const {return p;}
 
-Player *Tile::popPlayer() {
+Player *RegularTile::popPlayer() {
 	Player *tmp=p;
 	p=0;
 	sym = '.';
@@ -126,7 +126,7 @@ Player *Tile::popPlayer() {
 	return tmp;
 }
 
-void Tile::pushEnemy(Enemy *e) {
+void RegularTile::pushEnemy(Enemy *e) {
 	this->e = e;
 	string tmpType = e->getType();
 	if(tmpType=="vampire") sym = 'V';
@@ -140,9 +140,9 @@ void Tile::pushEnemy(Enemy *e) {
 	else contain = 'E';
 }
 
-Enemy *Tile::getEnemy() const {return e;}
+Enemy *RegularTile::getEnemy() const {return e;}
 
-Enemy *Tile::popEnemy() {
+Enemy *RegularTile::popEnemy() {
 	Enemy *tmp = e;
 	e=0;
 	sym = '.';

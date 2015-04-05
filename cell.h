@@ -10,7 +10,7 @@ const int maxNeighbours = 8;
 
 class Cell {
 	protected:	
-	std::string type; // wall1("|"), wall2("-"), passenger1("+"), passenger2("#"), doorway("\"), tile(".")
+	std::string type; // wall1("|"), wall2("-"), PassageTile1("+"), PassageTile2("#"), doorway("\"), RegularTile(".")
 	const std::string name;
 	char sym;
 	int numNeighbours;
@@ -40,19 +40,19 @@ class Cell {
 	virtual ~Cell()=0;
 };
 
-class ECell : public Cell {
+class NonPathableTile : public Cell {
 	public:
-	ECell(int r, int c, std::string type, std::string name);
-	~ECell();
+	NonPathableTile(int r, int c, std::string type, std::string name);
+	~NonPathableTile();
 
 	void notifyDisplay(TextDisplay &t);
 };
 
-class Passenger : public Cell {
+class PassageTile : public Cell {
 	Player *p;
 	public:
-	Passenger(int r, int c, std::string type, std::string name);
-	~Passenger();
+	PassageTile(int r, int c, std::string type, std::string name);
+	~PassageTile();
 	
 	void notifyDisplay(TextDisplay &t);
 
@@ -61,15 +61,15 @@ class Passenger : public Cell {
 	Player *popPlayer();
 };
 
-class Tile : public Cell {
+class RegularTile : public Cell {
 	const int room;
 	Player *p;
 	Enemy *e;
 	bool avail;
 	char contain;
 	public:
-	Tile(int r, int c, int room);
-	~Tile();
+	RegularTile(int r, int c, int room);
+	~RegularTile();
 
 	void notifyDisplay(TextDisplay &t);
 

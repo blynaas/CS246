@@ -41,21 +41,28 @@ int main(int argc,char *argv[])
 					endOfGame = true;
 					break;
 				}
+				if(s == "a")
+				{
+					cin >> s;
+					f->playerAttack(s);
+				}
 				else 
 				{
 					f->move(s);
-					if(f->isOver() == 1)
-					{
-						cout << deathwords << endl;
-						dead = true;
-						break;
-					}
-					cout << (*f);
-					if(f->isOver() == 2)
-					{
-						break;
-					}
 				}
+
+				if(f->isOver() == 1) // check end conditions
+				{
+					cout << deathwords << endl;
+					dead = true;
+					break;
+				}
+				if(f->isOver() == 2)
+				{
+					break;
+				}
+
+				cout << (*f);
 				f->clearAction();
 				cout << "Command: " << endl;
 			}

@@ -36,7 +36,9 @@ class Floor {
 	void storePotion(std::string d);
 	void usePotion(int i); //use potion in the bag
 	void obtainGold(Cell *p, Cell *g);
-	void doMove(Cell *s, Cell *e, std::string d);
+	void movePlayer(Cell *s, Cell *e);
+	int playerAttack(std::string d);
+	Cell* getTargetCell(std::string d);
 	int isOver() const;
 	void init();
 	void init(int r, int c);

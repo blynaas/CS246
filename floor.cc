@@ -9,24 +9,39 @@
 
 using namespace std;
 
-Floor::Floor(int f) :
- over(0), pr(0), pc(0) {
+Floor::Floor(int f) : over(0), pr(0), pc(0)
+{
 	td = new TextDisplay(f, false);
-	for(int i=0; i<MAXR; i++) {
-		for(int j=0; j<MAXC; j++) theFloor[i][j]=0;
+
+	for(int i=0; i<MAXR; i++)
+	{
+		for(int j=0; j<MAXC; j++)
+		{
+			theFloor[i][j]=0;
+		}
 	}
 }
 
-Floor::~Floor() {
+Floor::~Floor()
+{
 	delete td;
-	for(int i=0; i<MAXR; i++) {
-		for(int j=0; j<MAXC; j++)  delete theFloor[i][j];
+
+	for(int i=0; i<MAXR; i++)
+	{
+		for(int j=0; j<MAXC; j++)
+		{
+			delete theFloor[i][j];
+		}
 	}
 }
 
-int Floor::isOver() const {return over;}
+int Floor::isOver() const
+{
+	return over;
+}
 
-void Floor::init() {
+void Floor::init()
+{
 	string fname = "map.in";
 	ifstream in(fname.c_str());
 	int tnum=0;
@@ -35,6 +50,7 @@ void Floor::init() {
 	for(int i=0; i<NUMROOM; i++) roomnum[i]=0;
 	int tmpnum=0;
 	char dec;
+
 	for(int i=0; i<MAXR; i++)
 	{
 		for(int j=0; j<MAXC; j++)
@@ -63,6 +79,7 @@ void Floor::init() {
 	theFloor[5][10]->setDoorway();
 	//enemies
 	theFloor[3][12]->pushEnemy(new Goblin());
+
 	//notify the display
 	for(int i=0; i<MAXR; i++)
 	{
@@ -74,38 +91,35 @@ void Floor::init() {
 }
 
 int Floor::move(string d) {
-	Cell **tmp = theFloor[pr][pc]->getNeighbours();
-	Cell *ctmp = 0;
+	Cell* ctmp = getTargetCell(d);
 	int ret = 0;
-	if(d=="nw") ctmp=tmp[0];
-	else if(d=="no") ctmp=tmp[1];
-	else if(d=="ne") ctmp=tmp[2];
-	else if(d=="we") ctmp=tmp[3];
-	else if(d=="ea") ctmp=tmp[4];
-	else if(d=="sw") ctmp=tmp[5];
-	else if(d=="so") ctmp=tmp[6];
-	else if(d=="se") ctmp=tmp[7];
 
-	if(!ctmp) {td->setAction("Invalid command! ");}
-	else if(ctmp->getType()=="E") {td->setAction("Cannot go there! ");}
-	else if(ctmp->getType()=="D") {
+	if(!ctmp)
+	{
+		td->setAction("Invalid command! ");
+	}
+	else if(ctmp->getType()=="E")
+	{
+		td->setAction("Cannot go there! ");
+	}
+	else if(ctmp->getType()=="D")
+	{
 		over=2;
 		td->setAction("Whoa, a doorway.");
 		ret = 1;
 	}
 	else if (ctmp->getType() == "P" || (ctmp->getType() == "T" && ctmp->available()))
 	{
-		doMove(theFloor[pr][pc], ctmp, d);
+		movePlayer(theFloor[pr][pc], ctmp);
+		td->setAction("PC moves " + d + " ");
 		ret = 1;
 	}
 	else
 	{
 		td->setAction("Target is occupied.");
-		ret = 0;
 	}
 
 	endTurn();
-
 	return ret;
 }
 
@@ -113,8 +127,10 @@ void Floor::endTurn()
 {
 	moveEnemies();
 
-	for(int i=0; i<MAXR; i++) {
-		for(int j=0; j<MAXC; j++) {
+	for(int i=0; i<MAXR; i++)
+	{
+		for(int j=0; j<MAXC; j++)
+		{
 			theFloor[i][j]->notifyDisplay(*td);
 		}
 	}
@@ -122,8 +138,10 @@ void Floor::endTurn()
 
 void Floor::moveEnemies()
 {
-	for(int i=0; i<MAXR; i++) {
-		for(int j=0; j<MAXC; j++){
+	for(int i=0; i<MAXR; i++)
+	{
+		for(int j=0; j<MAXC; j++)
+		{
 			Cell *ctmp = theFloor[i][j];
 			if (ctmp->containsEnemy() && !ctmp->getEnemy()->getMoved())
 			{
@@ -134,8 +152,10 @@ void Floor::moveEnemies()
 		}
 	}
 
-	for(int i=0; i<MAXR; i++) {
-		for(int j=0; j<MAXC; j++){
+	for(int i=0; i<MAXR; i++)
+	{
+		for(int j=0; j<MAXC; j++)
+		{
 			Cell *ctmp = theFloor[i][j];
 			if (ctmp->containsEnemy())
 			{
@@ -146,9 +166,13 @@ void Floor::moveEnemies()
 
 }
 
-void Floor::clearAction() {td->clearAction();}
+void Floor::clearAction()
+{
+	td->clearAction();
+}
 
-void Floor::doMove(Cell *s, Cell *e, string d) {
+void Floor::movePlayer(Cell *s, Cell *e)
+{
 	Cell **tmp = s->getNeighbours();
 	string ma[8] = {"North West", "North", "North East",
 	 "West", "East", "South West", "South", "South East"}; 
@@ -158,12 +182,52 @@ void Floor::doMove(Cell *s, Cell *e, string d) {
 	e->getPos(&m, &n);
 	pr=m;
 	pc=n;
-	td->setAction("PC moves "+d+" ");
 	tmp = e->getNeighbours();
-	
 }
 
-void Floor::init(int r, int c) {
+
+int Floor::playerAttack(string d)
+{
+	Cell* ctmp = getTargetCell(d);
+	int ret = 0;
+
+	if(!ctmp)
+	{
+		td->setAction("Invalid command! ");
+	}
+	else if(ctmp->containsEnemy())
+	{
+		//attack it, blank for now
+		td->setAction("Attacked some nigga.");
+		ret = 1;
+	}
+	else
+	{
+		td->setAction("Nothing there to attack!");
+	}
+
+	endTurn();
+}
+
+Cell* Floor::getTargetCell(string d)
+{
+	Cell **tmp = theFloor[pr][pc]->getNeighbours();
+	Cell *ctmp = 0;
+	if(d=="nw") ctmp=tmp[0];
+	else if(d=="no") ctmp=tmp[1];
+	else if(d=="ne") ctmp=tmp[2];
+	else if(d=="we") ctmp=tmp[3];
+	else if(d=="ea") ctmp=tmp[4];
+	else if(d=="sw") ctmp=tmp[5];
+	else if(d=="so") ctmp=tmp[6];
+	else if(d=="se") ctmp=tmp[7];
+
+	return ctmp;
+}
+
+
+void Floor::init(int r, int c)
+{
 	if(r>0) {
 		if(c>0) theFloor[r][c]->addNeighbour(0, theFloor[r-1][c-1]);
 		theFloor[r][c]->addNeighbour(1, theFloor[r-1][c]);
@@ -178,20 +242,22 @@ void Floor::init(int r, int c) {
 	}
 }
 
-void Floor::crea(int r, int c, char ch) {
-	if(ch=='|') theFloor[r][c] = new ECell(r, c, "E", "wall1");
-	else if(ch=='-') theFloor[r][c] = new ECell(r, c, "E", "wall2");
-	else if(ch=='E') theFloor[r][c] = new ECell(r, c, "E", "empty");
-	else if(ch=='+') theFloor[r][c] = new Passenger(r, c, "P", "pass1");
-	else if(ch=='#') theFloor[r][c] = new Passenger(r, c, "P", "pass2");
-	else if(ch=='0') theFloor[r][c] = new Tile(r,c,0);
-	else if(ch=='1') theFloor[r][c] = new Tile(r,c,1);
-	else if(ch=='2') theFloor[r][c] = new Tile(r,c,2);
-	else if(ch=='3') theFloor[r][c] = new Tile(r,c,3);
-	else if(ch=='4') theFloor[r][c] = new Tile(r,c,4);
+void Floor::crea(int r, int c, char ch)
+{
+	if(ch=='|') theFloor[r][c] = new NonPathableTile(r, c, "E", "wall1");
+	else if(ch=='-') theFloor[r][c] = new NonPathableTile(r, c, "E", "wall2");
+	else if(ch=='E') theFloor[r][c] = new NonPathableTile(r, c, "E", "empty");
+	else if(ch=='+') theFloor[r][c] = new PassageTile(r, c, "P", "pass1");
+	else if(ch=='#') theFloor[r][c] = new PassageTile(r, c, "P", "pass2");
+	else if(ch=='0') theFloor[r][c] = new RegularTile(r,c,0);
+	else if(ch=='1') theFloor[r][c] = new RegularTile(r,c,1);
+	else if(ch=='2') theFloor[r][c] = new RegularTile(r,c,2);
+	else if(ch=='3') theFloor[r][c] = new RegularTile(r,c,3);
+	else if(ch=='4') theFloor[r][c] = new RegularTile(r,c,4);
 }
 
-Cell* Floor::emove(Cell *e) {
+Cell* Floor::emove(Cell *e)
+{
 	int m,n;
 	e->getPos(&m, &n);
 	Cell **tmp = e->getNeighbours();
@@ -206,7 +272,8 @@ Cell* Floor::emove(Cell *e) {
 	return tmp[rannum];
 }
 
-ostream &operator<<(ostream &out, const Floor &f) {
+ostream &operator<<(ostream &out, const Floor &f)
+{
 	out << (*f.td);
 	return out;
 }
