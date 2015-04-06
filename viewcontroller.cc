@@ -30,8 +30,7 @@ ostream &operator<<(ostream &out, const ViewController &td) {
 	out<<"Race: "<<td.p->getRace()<<" "<<"Gold: "<<
 	td.p->getGold()<<"                        "<<
 	"                      "<<"Floor "<<td.f<<"\n";
-	if(td.p->getHp()>=0) out<<"HP: "<<td.p->getHp()<<"\n";
-	else out<<"HP: "<<0<<"\n";
+	out<<"HP: "<<td.p->getHp()<<"\n";
 	out<<"Atk: "<<td.p->getAtk()<<"\n";
 	out<<"Def: "<<td.p->getDef()<<"\n";
 	out<<"Action: "<<td.action<<"\n";

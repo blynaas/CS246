@@ -44,6 +44,8 @@ class Floor {
 	void enemiesAttack();
 	int move(std::string d); // 1 means success, 0 means fail
 	void endTurn();
+	Cell* getRandomEmptyCell(int* row, int* col);
+	Cell* getRandomEmptyCell();
 	void moveEnemies();
 	//void print();
 

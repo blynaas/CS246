@@ -50,14 +50,14 @@ Goblin::~Goblin() {}
 Troll::Troll() : Enemy(120, 25, 15, "troll") {gold=1;}
 Troll::~Troll() {}
 
-Vampire::Vampire() : Enemy(50, 25, 25, "goblin") {gold=1;}
+Vampire::Vampire() : Enemy(50, 25, 25, "vampire") {gold=1;}
 Vampire::~Vampire() {}
 
-Werewolf::Werewolf() : Enemy(120, 30, 5, "troll") {gold=1;}
+Werewolf::Werewolf() : Enemy(120, 30, 5, "werewolf") {gold=1;}
 Werewolf::~Werewolf() {}
 
-Merchant::Merchant() : Enemy(30, 70, 5, "goblin") {gold=0;}
+Merchant::Merchant() : Enemy(30, 70, 5, "merchant") {gold=0;}
 Merchant::~Merchant() {}
 
-Phoenix::Phoenix() : Enemy(50, 35, 20, "troll") {gold=1;}
+Phoenix::Phoenix() : Enemy(50, 35, 20, "phoenix") {gold=1;}
 Phoenix::~Phoenix() {}

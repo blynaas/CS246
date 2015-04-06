@@ -47,8 +47,9 @@ void Floor::init()
 {
 	string fname = "map.in";
 	ifstream in(fname.c_str());
+	int numEnemies = 20;
+	int numTreasure = 10;
 	int tnum=0;
-	const int NUMROOM=5;
 	int roomnum[NUMROOM];
 	for(int i=0; i<NUMROOM; i++) roomnum[i]=0;
 	int tmpnum=0;
@@ -74,19 +75,77 @@ void Floor::init()
 			linkCell(i, j);
 		}
 	}
-	//intial player location
-	theFloor[5][5]->pushPlayer(Player::getPlayer());
-	pr = 5;
-	pc = 5;
-	//initial doorway location
-	theFloor[5][10]->setDoorway();
-	//enemies
-	theFloor[3][12]->pushEnemy(new Goblin());
-	theFloor[3][16]->pushEnemy(new Goblin());
-	theFloor[4][17]->pushEnemy(new Goblin());
-	theFloor[6][20]->pushEnemy(new Troll());
+
+	//player
+	int row, col;
+
+	Cell* playerCell = getRandomEmptyCell(&row, &col);
+	playerCell->pushPlayer(Player::getPlayer());
+	pr = row;
+	pc = col;
+
+	//doorway
+	while(true)
+	{
+		Cell* doorCell = getRandomEmptyCell();
+
+		if (doorCell->getRoom() != playerCell->getRoom())
+		{
+			doorCell->setDoorway();
+			break;
+		}
+	}
+
 	//treasure
-	theFloor[6][10]->pushItem(new Treasure(1));
+	for (int i = 0; i < numTreasure; i++)
+	{
+		int rnd = rand()%8;
+
+		if (rnd <= 4)
+		{
+			getRandomEmptyCell()->pushItem(new Treasure(1));
+		}
+		else if (rnd <= 6)
+		{
+			getRandomEmptyCell()->pushItem(new Treasure(2));
+		}
+		else if (rnd == 7)
+		{
+			// dragon hoard
+		}
+	}
+
+	//enemies
+	for (int i = 0; i < numEnemies; i++)
+	{
+		int rnd = rand()%18;
+
+		if (rnd <= 3)
+		{
+			getRandomEmptyCell()->pushEnemy(new Werewolf());
+		}
+		else if (rnd <= 6)
+		{
+			getRandomEmptyCell()->pushEnemy(new Vampire());
+		}
+		else if (rnd <= 11)
+		{
+			getRandomEmptyCell()->pushEnemy(new Goblin());
+		}
+		else if (rnd <= 13)
+		{
+			getRandomEmptyCell()->pushEnemy(new Troll());
+		}
+		else if (rnd <= 15)
+		{
+			getRandomEmptyCell()->pushEnemy(new Phoenix());
+		}
+		else if (rnd <= 17)
+		{
+			getRandomEmptyCell()->pushEnemy(new Merchant());
+		}
+
+	}
 
 	//notify the display
 	for(int i=0; i<MAXR; i++)
@@ -98,8 +157,43 @@ void Floor::init()
 	}
 }
 
+Cell* Floor::getRandomEmptyCell(int* row, int* col)
+{
+	int room = rand()%NUMROOM;
+
+	while(true)
+	{
+		*row = rand()%MAXR;
+		*col = rand()%MAXC;
+		Cell* temp = theFloor[*row][*col];
+
+		if (temp->getSym() == '.' && temp->getRoom() == room)
+		{
+			return temp;
+		}
+	}
+}
+
+Cell* Floor::getRandomEmptyCell()
+{
+	int room = rand()%NUMROOM;
+
+	while(true)
+	{
+		int row = rand()%MAXR;
+		int col = rand()%MAXC;
+		Cell* temp = theFloor[row][col];
+
+		if (temp->getSym() == '.' && temp->getRoom() == room)
+		{
+			return temp;
+		}
+	}
+}
+
 int Floor::move(string d) {
 	Cell* ctmp = getTargetCell(d);
+
 	int ret = 0;
 
 	if(!ctmp)
@@ -120,10 +214,10 @@ int Floor::move(string d) {
 	{
 		stringstream ss;
 		ss << "";
-		if (ctmp->getSym() == 'G')
+		if (ctmp->getContain() == 'G')
 		{
 			int value = ctmp->getItem()->getGoldValue();
-			Player::getPlayer()->addGold(value);
+			value = Player::getPlayer()->addGold(value);
 			ss << "PC obtained " << value << " gold!";
 		}
 

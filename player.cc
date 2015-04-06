@@ -36,7 +36,7 @@ Player::Player(int hp, int atk, int def, string race) :
 
 int Player::getAtk() const {return atk;}
 int Player::getDef() const {return def;}
-void Player::addGold(int i) {gold+=i;}
+int Player::addGold(int i) {gold+=i; return i;}
 void Player::addHp(int i) {hp = max(hp+i, 0);}
 int Player::getOriHp() const {return oriHp;}
 string Player::getRace() const {return race;}
@@ -63,9 +63,20 @@ Human::~Human(){}
 
 Dwarf::Dwarf(): Player(100, 20, 30, "Dwarf"){}
 Dwarf::~Dwarf(){}
+int Dwarf::addGold(int i)
+{
+	gold+= 2*i;
+	return 2*i;
+}
 
 Elf::Elf(): Player(140, 30, 10, "Elf"){}
 Elf::~Elf(){}
 
 Orc::Orc(): Player(180, 30, 25, "Orc"){}
 Orc::~Orc(){}
+int Orc::addGold(int i)
+{
+	gold+= i/(double)2;
+	return i/(double)2;
+}
+

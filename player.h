@@ -23,7 +23,7 @@ class Player : public Character {
 	static void setPlayer(std::string race);
 	static void setPlayer(Player *p); //singleton
 
-	virtual void addGold(int i); //half for orc;;double for dwarf
+	virtual int addGold(int i); //half for orc;;double for dwarf
 	virtual void addHp(int i); //add to Hp;; ABS for elf
 	int getOriHp() const; //used to determine when to recover Hp**
 	std::string getRace() const; //get the race
@@ -44,6 +44,7 @@ class Dwarf : public Player {
 	public:
 		Dwarf(); //100HP, 20Atk 30Def
 		~Dwarf();
+		int addGold(int i);
 };
 
 class Elf : public Player {
@@ -56,6 +57,7 @@ class Orc : public Player {
 	public:
 		Orc();// 180HP, 30Atk, 25Def
 		~Orc();
+		int addGold(int i);
 };
 
 #endif

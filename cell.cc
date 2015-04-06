@@ -23,7 +23,7 @@ void Cell::addNeighbour(int po, Cell *neighbour) {
 
 bool Cell::containsEnemy()
 {
-	return sym == 'N' || sym == 'T'; //TODO: make this function less stupid
+	return sym == 'N' || sym == 'T' || sym == 'W' || sym == 'V' || sym == 'M' || sym == 'X'; //TODO: make this function less stupid
 }
 
 Cell **Cell::getNeighbours() const {return neighbours;}
@@ -156,7 +156,7 @@ Enemy *RegularTile::popEnemy() {
 void RegularTile::pushItem(Item *i) {
 	this->i = i;
 	sym = 'G';
-	contain = 'T';
+	contain = 'G';
 	type = 'T';
 }
 
