@@ -8,12 +8,12 @@
 #include "item.h"
 #include <math.h>
 
-
 using namespace std;
 
 Floor::Floor(int f) : over(0), pr(0), pc(0)
 {
-	viewCtrl = new ViewController(f, false);
+	roomCount=0;
+	viewCtrl = new ViewController(f);
 
 	for(int i = 0; i < MAXR; i++)
 	{
@@ -42,23 +42,79 @@ int Floor::isOver() const
 	return over;
 }
 
+void Floor::generateCell(int r, int c, char ch, int chamber)
+{
+	if(ch=='|')
+	{
+		theFloor[r][c] = new NonPathableTile(r, c, "E", "wall1");
+	}
+	else if(ch=='-')
+	{
+		theFloor[r][c] = new NonPathableTile(r, c, "E", "wall2");
+	}
+	else if(ch==' ')
+	{
+		theFloor[r][c] = new NonPathableTile(r, c, "E", "empty");
+	}
+	else if(ch=='+')
+	{
+		theFloor[r][c] = new PassageTile(r, c, "P", "pass1");
+	}
+	else if(ch=='#')
+	{
+		theFloor[r][c] = new PassageTile(r, c, "P", "pass2");
+	}
+	else if (ch=='0')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushItem(new Potion(10));
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='6')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushItem(new Treasure(1));
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='7')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushItem(new Treasure(2));
+		roomCount = max(roomCount,chamber+1);
+	}
+	else
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		roomCount = max(roomCount,chamber+1);
+	}
+}
+
 void Floor::init()
 {
-	string fname = "map.in";
-	ifstream in(fname.c_str());
+	string fname1 = "mapActual.in";
+	ifstream in1(fname1.c_str());
+
+	string fname2 = "map.in";
+	ifstream in2(fname2.c_str());
+
 	int numEnemies = 20;
 	int numTreasure = 10;
 	int numPotions = 10;
 
-	int tmpnum=0;
 	char dec;
+	char chamber;
 
 	for(int i = 0; i < MAXR; i++)
 	{
 		for(int j = 0; j < MAXC; j++)
 		{
-			in >> dec;
-			generateCell(i, j, dec);
+			do
+			{
+				in2.get(dec);
+				in1.get(chamber);
+			} while (chamber == '\n' || dec == '\n');
+
+			generateCell(i, j, dec, (int)(chamber-'0'));
 		}
 	}
 
@@ -152,7 +208,7 @@ void Floor::init()
 
 Cell* Floor::getRandomEmptyCell(int* row, int* col)
 {
-	int room = rand()%NUMROOM;
+	int room = rand()%roomCount;
 
 	while(true)
 	{
@@ -169,7 +225,7 @@ Cell* Floor::getRandomEmptyCell(int* row, int* col)
 
 Cell* Floor::getRandomEmptyCell()
 {
-	int room = rand()%NUMROOM;
+	int room = rand()%roomCount;
 
 	while(true)
 	{
@@ -430,35 +486,35 @@ void Floor::linkCells()
 	{
 		for(int c=0; c<MAXC; c++)
 		{
-			if(r>0) {
-				if(c>0) theFloor[r][c]->addNeighbour(0, theFloor[r-1][c-1]);
+			if(r>0)
+			{
 				theFloor[r][c]->addNeighbour(1, theFloor[r-1][c]);
-				if(c<MAXC-1) theFloor[r][c]->addNeighbour(2, theFloor[r-1][c+1]);
+				if(c>0)
+					theFloor[r][c]->addNeighbour(0, theFloor[r-1][c-1]);
+				if(c<MAXC-1)
+					theFloor[r][c]->addNeighbour(2, theFloor[r-1][c+1]);
 			}
-			if(c>0) {theFloor[r][c]->addNeighbour(3, theFloor[r][c-1]);}
-			if(c<MAXC-1) {theFloor[r][c]->addNeighbour(4, theFloor[r][c+1]);}
-			if(r<MAXR-1) {
-				if(c>0) theFloor[r][c]->addNeighbour(5, theFloor[r+1][c-1]);
+			if(c>0)
+			{
+				theFloor[r][c]->addNeighbour(3, theFloor[r][c-1]);
+			}
+			if(c<MAXC-1)
+			{
+				theFloor[r][c]->addNeighbour(4, theFloor[r][c+1]);
+			}
+			if(r<MAXR-1)
+			{
 				theFloor[r][c]->addNeighbour(6, theFloor[r+1][c]);
-				if(c<MAXC-1) theFloor[r][c]->addNeighbour(7, theFloor[r+1][c+1]);
+				if(c>0)
+					theFloor[r][c]->addNeighbour(5, theFloor[r+1][c-1]);
+				if(c<MAXC-1)
+					theFloor[r][c]->addNeighbour(7, theFloor[r+1][c+1]);
 			}
 		}
 	}
 }
 
-void Floor::generateCell(int r, int c, char ch)
-{
-	if(ch=='|') theFloor[r][c] = new NonPathableTile(r, c, "E", "wall1");
-	else if(ch=='-') theFloor[r][c] = new NonPathableTile(r, c, "E", "wall2");
-	else if(ch=='E') theFloor[r][c] = new NonPathableTile(r, c, "E", "empty");
-	else if(ch=='+') theFloor[r][c] = new PassageTile(r, c, "P", "pass1");
-	else if(ch=='#') theFloor[r][c] = new PassageTile(r, c, "P", "pass2");
-	else if(ch=='0') theFloor[r][c] = new RegularTile(r,c,0);
-	else if(ch=='1') theFloor[r][c] = new RegularTile(r,c,1);
-	else if(ch=='2') theFloor[r][c] = new RegularTile(r,c,2);
-	else if(ch=='3') theFloor[r][c] = new RegularTile(r,c,3);
-	else if(ch=='4') theFloor[r][c] = new RegularTile(r,c,4);
-}
+
 
 Cell* Floor::moveEnemy(Cell *e)
 {

@@ -14,6 +14,7 @@ class Floor
   
 	Cell *theFloor[MAXR][MAXC];
 	ViewController *viewCtrl;
+	int roomCount;
 	int over; //0: not over, 1: player dead, 2: next floor, 3: win
 	int pr, pc; // player's location
 
@@ -42,7 +43,7 @@ public:
 	void init();
 
 	void linkCells();
-	void generateCell(int r, int c, char ch);
+	void generateCell(int r, int c, char ch, int chamber);
 
 	Cell* getRandomEmptyCell(int* row, int* col);
 	Cell* getRandomEmptyCell();

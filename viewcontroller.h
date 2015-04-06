@@ -9,7 +9,7 @@
 
 const int MAXR=25;
 const int MAXC=79;
-const int NUMROOM=5;
+extern int roomCount;
 
 class ViewController
 {
@@ -17,17 +17,13 @@ class ViewController
 	std::string action; //save the information that will be shown after "action:"
 	Player *p; //an pointer to player to gain information
 	int f; //shows which floor this is
-	bool canStorePotion; //determine whether to show the potion list
 
 	public:
-	ViewController(int f, bool canStorePotion); //ctor
+	ViewController(int f); //ctor
 	void notify(int r, int c, char ch); //cells will call this to let the display know which char it should display
 	void addAction(std::string ac); //methods in Floor will call this to let the display know what action to show
 	void clearActions();
 	~ViewController();
-
-	void print();
-	void coodPrint(char c);
 	
 	friend std::ostream &operator<<(std::ostream &out, const ViewController &td);
 };

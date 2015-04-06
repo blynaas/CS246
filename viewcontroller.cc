@@ -4,7 +4,7 @@
 #include "player.h"
 using namespace std;
 
-ViewController::ViewController(int f, bool canStorePotion) : p(Player::getPlayer()), f(f), canStorePotion(canStorePotion)
+ViewController::ViewController(int f) : p(Player::getPlayer()), f(f)
 {
 	action = "Player character has spawned.";
 
