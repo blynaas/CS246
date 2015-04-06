@@ -4,7 +4,8 @@
 #include <string>
 #include "player.h"
 #include "enemy.h"
-#include "textdisplay.h"
+#include "item.h"
+#include "viewcontroller.h"
 
 const int maxNeighbours = 8;
 
@@ -27,7 +28,7 @@ class Cell {
 	Cell **getNeighbours() const;
 	
 	virtual int getRoom() const;
-	virtual void notifyDisplay(TextDisplay &t);
+	virtual void notifyDisplay(ViewController &viewCtrl);
 	virtual bool available() const;
 	virtual void setDoorway();
 	virtual char getContain() const;
@@ -37,6 +38,9 @@ class Cell {
 	virtual void pushEnemy(Enemy *e);
 	virtual Enemy *getEnemy() const;
 	virtual Enemy *popEnemy();
+	virtual void pushItem(Item *i);
+	virtual Item *getItem() const;
+	virtual Item *popItem();
 	virtual ~Cell()=0;
 };
 
@@ -45,7 +49,7 @@ class NonPathableTile : public Cell {
 	NonPathableTile(int r, int c, std::string type, std::string name);
 	~NonPathableTile();
 
-	void notifyDisplay(TextDisplay &t);
+	void notifyDisplay(ViewController &viewCtrl);
 };
 
 class PassageTile : public Cell {
@@ -54,7 +58,7 @@ class PassageTile : public Cell {
 	PassageTile(int r, int c, std::string type, std::string name);
 	~PassageTile();
 	
-	void notifyDisplay(TextDisplay &t);
+	void notifyDisplay(ViewController &viewCtrl);
 
 	void pushPlayer(Player *p);
 	Player *getPlayer() const;
@@ -65,13 +69,14 @@ class RegularTile : public Cell {
 	const int room;
 	Player *p;
 	Enemy *e;
+	Item *i;
 	bool avail;
 	char contain;
 	public:
 	RegularTile(int r, int c, int room);
 	~RegularTile();
 
-	void notifyDisplay(TextDisplay &t);
+	void notifyDisplay(ViewController &viewCtrl);
 
 	bool available() const;
 	void setDoorway();
@@ -83,6 +88,9 @@ class RegularTile : public Cell {
 	void pushEnemy(Enemy *e);
 	Enemy *getEnemy() const;
 	Enemy *popEnemy();
+	void pushItem(Item *i);
+	Item *getItem() const;
+	Item *popItem();
 };
 
 #endif

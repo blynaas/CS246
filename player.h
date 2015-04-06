@@ -20,23 +20,13 @@ class Player : public Character {
 	
 	public:
 	static Player *getPlayer(); //singleton
-	static Player *getPlayer(std::string race);
+	static void setPlayer(std::string race);
 	static void setPlayer(Player *p); //singleton
 
 	virtual void addGold(int i); //half for orc;;double for dwarf
 	virtual void addHp(int i); //add to Hp;; ABS for elf
-	void returnGold(int i); //used to gain the returned gold from goblin*
-	void buyAtk(int i); //used to gain permanent atk (by buying weapon from Merchants)****
-	void buyDef(int i); //used to gain permanent def (by buying armor from Merchants)****
-	void addAcc(); //used to determine when to recover Hp**
 	int getOriHp() const; //used to determine when to recover Hp**
-	int getAcc() const; //used to determine when to recover Hp**
-	void clearAcc(); //used to determine when to recover Hp**
-	void addMaxAcc(); //used to determine when to recover Hp**
-	int getMaxAcc() const; //used to determine when to recover Hp**
 	std::string getRace() const; //get the race
-	void lossHp(int i); //used when be attacked
-	void lossGold(int i); //used when gold is stealen by goblin*
 	void clear(); //used when player go to the next floor
 	int getAtk() const; //atk+exAtk
 	int getDef() const; //def+exDef

@@ -18,14 +18,13 @@ int main(int argc,char *argv[])
 	{
 		int floor = 1;
 		Floor *f = 0;
-		Player *pc = 0;
 		string s;
 
 		cout << "enter h, d, e, or o for human, dwarf, elf, or orc" << endl;
 
 		cin >> s;
 
-		pc = Player::getPlayer(s);
+		Player::setPlayer(s);
 
 		cout << "game start!" << endl;
 

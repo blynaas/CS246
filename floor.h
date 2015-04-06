@@ -9,7 +9,7 @@
 #include <iostream>
 #include "player.h"
 #include "cell.h"
-#include "textdisplay.h"
+#include "viewcontroller.h"
 
 //const int MAXR = 25;
 //const int MAXC = 79;
@@ -19,7 +19,7 @@ class Floor {
   
 	Cell *theFloor[MAXR][MAXC];
 	int moved[20][2];
-	TextDisplay *td;
+	ViewController *viewCtrl;
 	int over; //0:not over, 1:player passed away, 2:next floor, 3:win
 	int pr, pc; //locate the position of player
 
@@ -30,27 +30,22 @@ class Floor {
 	~Floor();
 
 	void clearAction();
-	void havePotion(char d1, char d2);
-	void storePotion(char d1, char d2);
-	void havePotion(std::string d);
-	void storePotion(std::string d);
-	void usePotion(int i); //use potion in the bag
-	void obtainGold(Cell *p, Cell *g);
+	//void obtainGold(Cell *p, Cell *g);
 	void movePlayer(Cell *s, Cell *e);
 	int playerAttack(std::string d);
 	Cell* getTargetCell(std::string d);
 	int isOver() const;
 	void init();
-	void init(int r, int c);
+	void linkCell(int r, int c);
 	void crea(int r, int c, char ch);
 	int pmove(char d1, char d2); // 1 means success, 0 means fail
-	Cell* emove(Cell *e); //enemy move
+	Cell* moveEnemy(Cell *e); //enemy move
 	int attack(char d1, char d2);
 	void enemiesAttack();
 	int move(std::string d); // 1 means success, 0 means fail
 	void endTurn();
 	void moveEnemies();
-	void print();
+	//void print();
 
 	
 	friend std::ostream &operator<<(std::ostream &out, const Floor &f);

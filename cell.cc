@@ -2,7 +2,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "cell.h"
-#include "textdisplay.h"
+#include "viewcontroller.h"
 
 using namespace std;
 
@@ -23,13 +23,13 @@ void Cell::addNeighbour(int po, Cell *neighbour) {
 
 bool Cell::containsEnemy()
 {
-	return sym == 'N'; //make this not shitty later
+	return sym == 'N' || sym == 'T'; //TODO: make this function less stupid
 }
 
 Cell **Cell::getNeighbours() const {return neighbours;}
 
 int Cell::getRoom() const {}
-void Cell::notifyDisplay(TextDisplay &t) {}
+void Cell::notifyDisplay(ViewController &viewCtrl) {}
 bool Cell::available() const {}
 void Cell::setDoorway() {}
 char Cell::getContain() const {}
@@ -39,6 +39,9 @@ Player *Cell::popPlayer() {}
 void Cell::pushEnemy(Enemy *e) {}
 Enemy *Cell::getEnemy() const {}
 Enemy *Cell::popEnemy() {}
+void Cell::pushItem(Item *e) {}
+Item *Cell::getItem() const {}
+Item *Cell::popItem() {}
 
 Cell::~Cell() {delete [] neighbours;}
 
@@ -53,8 +56,8 @@ NonPathableTile::NonPathableTile(int r, int c, string type, string name) : Cell(
 
 NonPathableTile::~NonPathableTile() {}
 
-void NonPathableTile::notifyDisplay(TextDisplay &t) {
-	t.notify(r, c, sym);
+void NonPathableTile::notifyDisplay(ViewController &viewCtrl) {
+	viewCtrl.notify(r, c, sym);
 }
 
 PassageTile::PassageTile(int r, int c, string type, string name) : Cell(r, c, type, name){
@@ -66,8 +69,8 @@ PassageTile::PassageTile(int r, int c, string type, string name) : Cell(r, c, ty
 
 PassageTile::~PassageTile() {}
 
-void PassageTile::notifyDisplay(TextDisplay &t) {
-	t.notify(r, c, sym);
+void PassageTile::notifyDisplay(ViewController &viewCtrl) {
+	viewCtrl.notify(r, c, sym);
 }
 
 void PassageTile::pushPlayer(Player *p) {
@@ -98,8 +101,8 @@ RegularTile::RegularTile(int r, int c, int room) :  Cell(r, c, "T", "RegularTile
 
 RegularTile::~RegularTile() {delete e;}
 
-void RegularTile::notifyDisplay(TextDisplay &t) {
-	t.notify(r, c, sym);
+void RegularTile::notifyDisplay(ViewController &viewCtrl) {
+	viewCtrl.notify(r, c, sym);
 }
 
 bool RegularTile::available() const {return avail&&!(p||e);}
@@ -145,6 +148,23 @@ Enemy *RegularTile::getEnemy() const {return e;}
 Enemy *RegularTile::popEnemy() {
 	Enemy *tmp = e;
 	e=0;
+	sym = '.';
+	contain = ' ';
+	return tmp;
+}
+
+void RegularTile::pushItem(Item *i) {
+	this->i = i;
+	sym = 'G';
+	contain = 'T';
+	type = 'T';
+}
+
+Item *RegularTile::getItem() const {return i;}
+
+Item *RegularTile::popItem() {
+	Item *tmp = i;
+	i=0;
 	sym = '.';
 	contain = ' ';
 	return tmp;

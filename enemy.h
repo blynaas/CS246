@@ -27,10 +27,39 @@ class Enemy : public Character {
 };
 
 class Goblin : public Enemy {
-	int pgold;
 	public:
-	Goblin(); //70 HP, 5 Atk, 10 Def
+	Goblin();
 	~Goblin();
+};
+
+class Troll : public Enemy {
+	public:
+	Troll();
+	~Troll();
+};
+
+class Merchant : public Enemy {
+	public:
+	Merchant();
+	~Merchant();
+};
+
+class Werewolf : public Enemy {
+	public:
+	Werewolf();
+	~Werewolf();
+};
+
+class Phoenix : public Enemy {
+	public:
+	Phoenix();
+	~Phoenix();
+};
+
+class Vampire : public Enemy {
+	public:
+	Vampire();
+	~Vampire();
 };
 
 #endif

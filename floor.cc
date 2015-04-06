@@ -5,14 +5,16 @@
 #include <fstream>
 #include <sstream>
 #include "floor.h"
-#include "textdisplay.h"
+#include "viewcontroller.h"
+#include "item.h"
 #include <math.h>
+
 
 using namespace std;
 
 Floor::Floor(int f) : over(0), pr(0), pc(0)
 {
-	td = new TextDisplay(f, false);
+	viewCtrl = new ViewController(f, false);
 
 	for(int i=0; i<MAXR; i++)
 	{
@@ -25,7 +27,7 @@ Floor::Floor(int f) : over(0), pr(0), pc(0)
 
 Floor::~Floor()
 {
-	delete td;
+	delete viewCtrl;
 
 	for(int i=0; i<MAXR; i++)
 	{
@@ -69,7 +71,7 @@ void Floor::init()
 	{
 		for(int j=0; j<MAXC; j++)
 		{
-			init(i, j);
+			linkCell(i, j);
 		}
 	}
 	//intial player location
@@ -82,13 +84,16 @@ void Floor::init()
 	theFloor[3][12]->pushEnemy(new Goblin());
 	theFloor[3][16]->pushEnemy(new Goblin());
 	theFloor[4][17]->pushEnemy(new Goblin());
+	theFloor[6][20]->pushEnemy(new Troll());
+	//treasure
+	theFloor[6][10]->pushItem(new Treasure(1));
 
 	//notify the display
 	for(int i=0; i<MAXR; i++)
 	{
 		for(int j=0; j<MAXC; j++)
 		{
-			theFloor[i][j]->notifyDisplay(*td);
+			theFloor[i][j]->notifyDisplay(*viewCtrl);
 		}
 	}
 }
@@ -99,27 +104,37 @@ int Floor::move(string d) {
 
 	if(!ctmp)
 	{
-		td->setAction("Invalid command! ");
+		viewCtrl->setAction("Invalid command! ");
 	}
 	else if(ctmp->getType()=="E")
 	{
-		td->setAction("Cannot go there! ");
+		viewCtrl->setAction("Cannot go there! ");
 	}
 	else if(ctmp->getType()=="D")
 	{
 		over=2;
-		td->setAction("Whoa, a doorway.");
+		viewCtrl->setAction("Whoa, a doorway.");
 		ret = 1;
 	}
 	else if (ctmp->getType() == "P" || (ctmp->getType() == "T" && ctmp->available()))
 	{
+		stringstream ss;
+		ss << "";
+		if (ctmp->getSym() == 'G')
+		{
+			int value = ctmp->getItem()->getGoldValue();
+			Player::getPlayer()->addGold(value);
+			ss << "PC obtained " << value << " gold!";
+		}
+
 		movePlayer(theFloor[pr][pc], ctmp);
-		td->setAction("PC moves " + d + " ");
+		viewCtrl->setAction("PC moved to the " + d + ".");
+		viewCtrl->setAction(ss.str());
 		ret = 1;
 	}
 	else
 	{
-		td->setAction("Target is occupied.");
+		viewCtrl->setAction("Target is occupied.");
 	}
 
 	return ret;
@@ -145,10 +160,10 @@ void Floor::enemiesAttack()
 			}
 			else //enemy didn't miss
 			{
-				ss << "Took " << damage << " damage from " << tempCell->getSym();
+				ss << "Took " << damage << " damage from " << tempCell->getSym() << ".";
 			}
 
-			td->setAction(ss.str());
+			viewCtrl->setAction(ss.str());
 
 			tempCell->getEnemy()->setMoved(true);
 		}
@@ -168,7 +183,7 @@ void Floor::endTurn()
 	{
 		for(int j=0; j<MAXC; j++)
 		{
-			theFloor[i][j]->notifyDisplay(*td);
+			theFloor[i][j]->notifyDisplay(*viewCtrl);
 		}
 	}
 }
@@ -184,7 +199,7 @@ void Floor::moveEnemies()
 			{
 				int tempr, tempc;
 				ctmp->getPos(&tempr, &tempc);
-				emove(ctmp)->getEnemy()->setMoved(true);
+				moveEnemy(ctmp)->getEnemy()->setMoved(true);
 			}
 		}
 	}
@@ -205,7 +220,7 @@ void Floor::moveEnemies()
 
 void Floor::clearAction()
 {
-	td->clearAction();
+	viewCtrl->clearAction();
 }
 
 void Floor::movePlayer(Cell *s, Cell *e)
@@ -213,8 +228,7 @@ void Floor::movePlayer(Cell *s, Cell *e)
 	Cell **tmp = s->getNeighbours();
 	string ma[8] = {"North West", "North", "North East",
 	 "West", "East", "South West", "South", "South East"}; 
-	Player *tmpp = s->popPlayer();
-	e->pushPlayer(tmpp);
+	e->pushPlayer(s->popPlayer());
 	int m, n;
 	e->getPos(&m, &n);
 	pr=m;
@@ -230,19 +244,20 @@ int Floor::playerAttack(string d)
 
 	if(!ctmp)
 	{
-		td->setAction("Invalid command! ");
+		viewCtrl->setAction("Invalid command! ");
 	}
 	else if(ctmp->containsEnemy())
 	{
 		int damage = Player::getPlayer()->attack(ctmp->getEnemy());
 
 		stringstream ss;
-		ss << "Attacked an enemy to the " << d << " for " << damage << ", bringing it down to " << ctmp->getEnemy()->getHp() << " health.";
-		td->setAction(ss.str());
+		ss << "Hit a(n) " << ctmp->getSym() << " to the " << d << " for " << damage << " (" << ctmp->getEnemy()->getHp() << " health).";
+		viewCtrl->setAction(ss.str());
 
 		if (ctmp->getEnemy()->getHp() == 0)
 		{
 			Enemy* e = ctmp->popEnemy();
+			Player::getPlayer()->addGold(e->getGold());
 			delete e;
 		}
 
@@ -250,7 +265,7 @@ int Floor::playerAttack(string d)
 	}
 	else
 	{
-		td->setAction("Nothing there to attack!");
+		viewCtrl->setAction("Nothing there to attack!");
 	}
 
 	return ret;
@@ -273,7 +288,7 @@ Cell* Floor::getTargetCell(string d)
 }
 
 
-void Floor::init(int r, int c)
+void Floor::linkCell(int r, int c)
 {
 	if(r>0) {
 		if(c>0) theFloor[r][c]->addNeighbour(0, theFloor[r-1][c-1]);
@@ -303,24 +318,42 @@ void Floor::crea(int r, int c, char ch)
 	else if(ch=='4') theFloor[r][c] = new RegularTile(r,c,4);
 }
 
-Cell* Floor::emove(Cell *e)
+Cell* Floor::moveEnemy(Cell *e)
 {
 	int m,n;
 	e->getPos(&m, &n);
+
 	Cell **tmp = e->getNeighbours();
+
 	bool canmove=false;
-	for(int i=0; i<8; i++) {if(tmp[i]->getSym()=='.') {canmove=true; break;}}
-	if(!canmove) return e;
-	int rannum = rand()%8;
-	while(!tmp[rannum]||(tmp[rannum]->getSym()!='.')) rannum = rand()%8;
-	Enemy *tmpEne = e->popEnemy();
-	tmp[rannum]->pushEnemy(tmpEne);
-	tmp[rannum]->getPos(&m, &n);
-	return tmp[rannum];
+
+	for(int i=0; i<8; i++)
+	{
+		if(tmp[i]->getSym()=='.')
+		{
+			canmove=true; break;
+		}
+	}
+
+	if (!canmove)
+	{
+		return e;
+	}
+
+	int rnd = rand()%8;
+
+	while(!tmp[rnd] || (tmp[rnd]->getSym()!='.'))
+	{
+		rnd = rand()%8;
+	}
+
+	tmp[rnd]->pushEnemy(e->popEnemy());
+
+	return tmp[rnd];
 }
 
 ostream &operator<<(ostream &out, const Floor &f)
 {
-	out << (*f.td);
+	out << (*f.viewCtrl);
 	return out;
 }
