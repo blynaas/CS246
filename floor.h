@@ -23,7 +23,7 @@ public:
 	Floor(int f);
 	~Floor();
 
-	void clearAction();
+	void clearActions();
 
 	void movePlayer(Cell *s, Cell *e);
 	Cell* moveEnemy(Cell *e);

@@ -22,14 +22,14 @@ void ViewController::notify(int r, int c, char ch)
 	theDisplay[r][c] = ch;
 }
 
-void ViewController::setAction(string ac)
+void ViewController::addAction(string ac)
 {
 	action += ac + " ";
 }
 
-void ViewController::clearAction()
+void ViewController::clearActions()
 {
-	action="";
+	action = "";
 }
 
 ViewController::~ViewController() {}

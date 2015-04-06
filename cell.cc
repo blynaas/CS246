@@ -32,8 +32,8 @@ void Cell::addNeighbour(int po, Cell *neighbour)
 	{
 		neighbours = new Cell *[maxNeighbours];
 	}
-	
-	neighbours[po]=neighbour;
+
+	neighbours[po] = neighbour;
 	numNeighbours++;
 }
 

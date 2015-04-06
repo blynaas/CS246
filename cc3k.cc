@@ -11,21 +11,21 @@ using namespace std;
 int main(int argc,char *argv[])
 {
 	srand (time(NULL));
-	bool endOfGame = false;
-	cout << "cc3k!" <<endl;
-	while(!endOfGame)
+	bool gameOver = false;
+	cout << "Welcome to the world of cc3k!" <<endl;
+	while(!gameOver)
 	{
 		int floor = 1;
 		Floor *f = 0;
 		string s;
 
-		cout << "enter h, d, e, or o for human, dwarf, elf, or orc" << endl;
+		cout << "Choose your race! Enter h, d, e, or o for human, dwarf, elf, or orc." << endl;
 
 		cin >> s;
 
 		Player::setPlayer(s);
 
-		cout << "game start!" << endl;
+		cout << "Game start!" << endl;
 
 		while(floor < 6)
 		{
@@ -33,24 +33,22 @@ int main(int argc,char *argv[])
 			f = new Floor(floor);
 			f->init();
 			cout << (*f);
-			f->clearAction();
+			f->clearActions();
 			cout << "Command: "<<endl;
 
 			while(cin >> s)
 			{
-				string deathwords = "ur ded m8";
-
 				if(s == "q")
 				{
-					endOfGame = true;
+					gameOver = true;
 					break;
 				}
-				if(s == "a")
+				else if(s == "a")
 				{
 					cin >> s;
 					f->playerAttack(s);
 				}
-				if(s == "u")
+				else if(s == "u")
 				{
 					cin >> s;
 					f->usePotion(s);
@@ -65,17 +63,17 @@ int main(int argc,char *argv[])
 
 				if(f->isOver() == 1) // check end conditions
 				{
-					cout << deathwords << endl;
+					cout << "You died... scrub." << endl;
 					dead = true;
 					break;
 				}
-				if(f->isOver() == 2)
+				else if(f->isOver() == 2)
 				{
 					break;
 				}
 
 				cout << (*f);
-				f->clearAction();
+				f->clearActions();
 				cout << "Command: " << endl;
 			}
 
@@ -103,7 +101,7 @@ int main(int argc,char *argv[])
 				}
 				else
 				{
-					endOfGame = true;
+					gameOver = true;
 					break;
 				}
 			}
@@ -113,7 +111,7 @@ int main(int argc,char *argv[])
 
 			if(cin.eof())
 			{
-				endOfGame = true;
+				gameOver = true;
 				break;
 			}
 
@@ -126,17 +124,17 @@ int main(int argc,char *argv[])
 
 			if(floor == 6)
 			{
-				cout << "u win m8" << endl;
+				cout << "You've won! Congratulations!" << endl;
 				cout << "Do you want to restart the game? (y/n)" << endl;
 				cin >> s;
 				if(s != "y")
 				{
-					endOfGame = true;
+					gameOver = true;
 				}
 			}
 		}
 
-		cout << "\npeace out boys" << endl;
+		cout << "\n(c) Jordan Verasamy and Yaro Gorban 2015" << endl;
 		delete f;
 	}
 }

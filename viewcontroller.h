@@ -22,8 +22,8 @@ class ViewController
 	public:
 	ViewController(int f, bool canStorePotion); //ctor
 	void notify(int r, int c, char ch); //cells will call this to let the display know which char it should display
-	void setAction(std::string ac); //methods in Floor will call this to let the display know what action to show
-	void clearAction();
+	void addAction(std::string ac); //methods in Floor will call this to let the display know what action to show
+	void clearActions();
 	~ViewController();
 
 	void print();

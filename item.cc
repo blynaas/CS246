@@ -11,8 +11,14 @@ string Item::getType(){return type;}
 
 Treasure::Treasure(int i) : Item("treasure"), value(i) {}
 Treasure::~Treasure() {}
-int Treasure::getGoldValue() {return value;}
+int Treasure::getGoldValue()
+{
+	return value;
+}
 
 Potion::Potion(int i) : Item("potion"), value(i) {}
 Potion::~Potion() {}
-int Potion::getPotionHeal() {return value;}
+int Potion::getPotionHeal()
+{
+	return value;
+}

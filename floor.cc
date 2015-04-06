@@ -49,9 +49,7 @@ void Floor::init()
 	int numEnemies = 20;
 	int numTreasure = 10;
 	int numPotions = 10;
-	int tnum=0;
-	int roomnum[NUMROOM];
-	for(int i=0; i<NUMROOM; i++) roomnum[i]=0;
+
 	int tmpnum=0;
 	char dec;
 
@@ -60,11 +58,6 @@ void Floor::init()
 		for(int j = 0; j < MAXC; j++)
 		{
 			in >> dec;
-			if(dec >= '0' && dec < '5')
-			{
-				tnum++;
-				roomnum[dec-'0']++;
-			}
 			generateCell(i, j, dec);
 		}
 	}
@@ -112,7 +105,7 @@ void Floor::init()
 		}
 		else if (rnd == 7)
 		{
-			// dragon hoard
+			// dragon hoard here, if you ever end up doing it
 		}
 	}
 
@@ -197,20 +190,18 @@ int Floor::tryToMove(string d)
 
 	int ret = 0;
 
-	cout << ctmp->getType() << endl;
-
 	if(!ctmp)
 	{
-		viewCtrl->setAction("Invalid command! ");
+		viewCtrl->addAction("Invalid command! ");
 	}
 	else if(ctmp->getType()=="E")
 	{
-		viewCtrl->setAction("Cannot go there! ");
+		viewCtrl->addAction("Cannot go there! ");
 	}
 	else if(ctmp->getType()=="D")
 	{
 		over=2;
-		viewCtrl->setAction("Whoa, a doorway.");
+		viewCtrl->addAction("Whoa, a doorway.");
 		ret = 1;
 	}
 	else if (ctmp->getType() == "P" || ctmp->getContain() == 'G' || (ctmp->getType() == "T" && ctmp->available()))
@@ -225,13 +216,13 @@ int Floor::tryToMove(string d)
 		}
 
 		movePlayer(theFloor[pr][pc], ctmp);
-		viewCtrl->setAction("PC moved to the " + d + ".");
-		viewCtrl->setAction(ss.str());
+		viewCtrl->addAction("PC moved to the " + d + ".");
+		viewCtrl->addAction(ss.str());
 		ret = 1;
 	}
 	else
 	{
-		viewCtrl->setAction("Target is occupied.");
+		viewCtrl->addAction("Target is occupied.");
 	}
 
 	return ret;
@@ -243,7 +234,7 @@ void Floor::usePotion(string d)
 
 	if(!ctmp)
 	{
-		viewCtrl->setAction("Invalid command!");
+		viewCtrl->addAction("Invalid command!");
 	}
 	else if (ctmp->getType() == "potion")
 	{
@@ -253,11 +244,11 @@ void Floor::usePotion(string d)
 
 		stringstream ss;
 		ss << "Used a potion to the " << d << ", healed by " << healAmount << ".";
-		viewCtrl->setAction(ss.str());
+		viewCtrl->addAction(ss.str());
 	}
 	else
 	{
-		viewCtrl->setAction("That ain't no potion!");
+		viewCtrl->addAction("That ain't no potion!");
 	}
 }
 
@@ -284,7 +275,7 @@ void Floor::enemiesAttack()
 				ss << "Took " << damage << " damage from " << tempCell->getSym() << ".";
 			}
 
-			viewCtrl->setAction(ss.str());
+			viewCtrl->addAction(ss.str());
 
 			tempCell->getEnemy()->setMoved(true);
 		}
@@ -339,9 +330,9 @@ void Floor::moveEnemies()
 
 }
 
-void Floor::clearAction()
+void Floor::clearActions()
 {
-	viewCtrl->clearAction();
+	viewCtrl->clearActions();
 }
 
 void Floor::movePlayer(Cell *s, Cell *e)
@@ -364,7 +355,7 @@ int Floor::playerAttack(string d)
 
 	if(!ctmp)
 	{
-		viewCtrl->setAction("Invalid command! ");
+		viewCtrl->addAction("Invalid command! ");
 	}
 	else if(ctmp->containsEnemy())
 	{
@@ -372,7 +363,7 @@ int Floor::playerAttack(string d)
 
 		stringstream ss;
 		ss << "Hit a(n) " << ctmp->getSym() << " to the " << d << " for " << damage << " (" << ctmp->getEnemy()->getHp() << " health).";
-		viewCtrl->setAction(ss.str());
+		viewCtrl->addAction(ss.str());
 
 		if (ctmp->getEnemy()->getHp() == 0)
 		{
@@ -385,7 +376,7 @@ int Floor::playerAttack(string d)
 	}
 	else
 	{
-		viewCtrl->setAction("Nothing there to attack!");
+		viewCtrl->addAction("Nothing there to attack!");
 	}
 
 	return ret;
