@@ -80,6 +80,8 @@ void Floor::init()
 	theFloor[5][10]->setDoorway();
 	//enemies
 	theFloor[3][12]->pushEnemy(new Goblin());
+	theFloor[3][16]->pushEnemy(new Goblin());
+	theFloor[4][17]->pushEnemy(new Goblin());
 
 	//notify the display
 	for(int i=0; i<MAXR; i++)
@@ -136,7 +138,16 @@ void Floor::enemiesAttack()
 			int damage = tempCell->getEnemy()->attack(Player::getPlayer());
 
 			stringstream ss;
-			ss << "Took " << damage << " damage from " << tempCell->getSym();
+
+			if (damage == -1) // enemy missed
+			{
+				ss << tempCell->getSym() << " tried to attack, but missed.";
+			}
+			else //enemy didn't miss
+			{
+				ss << "Took " << damage << " damage from " << tempCell->getSym();
+			}
+
 			td->setAction(ss.str());
 
 			tempCell->getEnemy()->setMoved(true);
@@ -147,6 +158,11 @@ void Floor::enemiesAttack()
 void Floor::endTurn()
 {
 	moveEnemies();
+
+	if (Player::getPlayer()->getHp() <= 0)
+	{
+		over = true;
+	}
 
 	for(int i=0; i<MAXR; i++)
 	{

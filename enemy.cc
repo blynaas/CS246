@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include "enemy.h"
+#include <stdlib.h>
 
 using namespace std;
 
@@ -20,12 +21,23 @@ bool Enemy::getMoved() const {return movedThisTurn;}
 
 int Enemy::attack(Player* p)
 {
+	
+	int rnd = rand()%2;
+
 	double defense = p->getDef();
 
 	int damage = ceil((100/(100+defense))*atk);
 
-	p->addHp((-1)*damage);
+	if (rnd == 0)
+	{
+		p->addHp((-1)*damage);
+	}
+	else
+	{
+		damage = -1;
+	}
 
+	//returns -1 to signify a miss
 	return damage;
 }
 

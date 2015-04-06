@@ -45,7 +45,7 @@ void Player::addGold(int i) {gold+=i;cout << i<<" "<<gold<<endl;}
 void Player::returnGold(int i) {gold+=i;}
 void Player::buyAtk(int i) {atk+=i;}
 void Player::buyDef(int i) {def+=i;}
-void Player::addHp(int i) {hp+=i; if(hp<=0) hp=1;}
+void Player::addHp(int i) {hp = max(hp+i, 0);}
 void Player::addAcc() {acc++;}
 void Player::addMaxAcc() {maxAcc++;}
 int Player::getMaxAcc() const {return maxAcc;}

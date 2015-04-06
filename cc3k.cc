@@ -5,11 +5,13 @@
 #include "floor.h"	
 #include "character.h"
 #include "player.h"
+#include <stdlib.h>
 
 using namespace std;
 
 int main(int argc,char *argv[])
 {
+	srand (time(NULL));
 	bool endOfGame = false;
 	cout << "cc3k!" <<endl;
 	while(!endOfGame)
