@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <sstream>
+#include <fstream>
+#include <vector>
 #include "floor.h"	
 #include "character.h"
 #include "player.h"
@@ -8,8 +10,124 @@
 
 using namespace std;
 
+void floodNeighbours(vector< vector<char> >  &theMap, int r, int c, char value)
+{
+	if (theMap[r][c] != '.')
+	{
+		return;
+	}
+	else
+	{
+		theMap[r][c] = value;
+	}
+
+	if(r>0)
+	{
+		floodNeighbours(theMap, r-1, c, value);
+		if(c>0)
+		{
+			floodNeighbours(theMap, r-1, c-1, value);
+		}
+		if(c<MAXC-1)
+		{
+			floodNeighbours(theMap, r-1, c+1, value);
+		}
+	}
+	if(c>0)
+	{
+		floodNeighbours(theMap, r, c-1, value);
+	}
+	if(c<MAXC-1)
+	{
+		floodNeighbours(theMap, r, c+1, value);
+	}
+	if(r<MAXR-1)
+	{
+		floodNeighbours(theMap, r+1, c, value);
+		if(c>0)
+		{
+			floodNeighbours(theMap, r+1, c-1, value);
+		}
+		if(c<MAXC-1)
+		{
+			floodNeighbours(theMap, r+1, c+1, value);
+		}
+	}
+}
+
+void generateMapFile(string fileName)
+{
+	ifstream in(fileName.c_str());
+
+	vector< vector<char> > theMap(MAXR);
+
+	for (int r = 0; r < MAXR; r++)
+	{
+		theMap[r].resize(MAXC);
+	}
+
+	for (int r = 0; r < MAXR; r++)
+	{
+		for (int c = 0; c < MAXC; c++) // C++ WOW SO META
+		{
+			char ch;
+			do
+			{
+				in.get(ch);
+			} while (ch == '\n');
+
+			theMap[r][c] = (ch == ' ') ? 'E' : ch;
+
+			if (theMap[r][c] >= '0' && theMap[r][c] <= '9')
+			{
+				theMap[r][c] = '.';
+			}
+		}
+	}
+
+	bool done = false;
+	bool totallyDone = false;
+	
+	char count = '0';
+
+	while (!totallyDone)
+	{
+		totallyDone = true;
+		done = false;
+		for (int r = 0; r < MAXR; r++)
+		{
+			for (int c = 0; c < MAXC; c++)
+			{
+				if (theMap[r][c] == '.')
+				{
+					totallyDone = false;
+					floodNeighbours(theMap, r, c, count);
+					done = true;
+				}
+				if (done) break;
+			}
+			if (done) break;
+		}
+		count++;
+	}
+
+	ofstream fout("mapActual.in");
+
+	for (int r = 0; r < MAXR; r++)
+	{
+		for (int c = 0; c < MAXC; c++)
+		{
+			fout << theMap[r][c];
+		}
+		fout << endl;
+	}
+}
+
+
 int main(int argc,char *argv[])
 {
+	generateMapFile("map.in");
+
 	srand (time(NULL));
 	bool gameOver = false;
 	cout << "Welcome to the world of cc3k!" <<endl;
