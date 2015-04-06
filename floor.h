@@ -40,7 +40,7 @@ public:
 	void usePotion(std::string d);
 
 	int isOver() const;
-	void init();
+	void init(std::string mapFile);
 
 	void linkCells();
 	void generateCell(int r, int c, char ch, int chamber);

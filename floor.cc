@@ -89,12 +89,12 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 	}
 }
 
-void Floor::init()
+void Floor::init(string mapFile)
 {
-	string fname1 = "mapActual.in";
+	string fname1 = "mapWithChamberIDs.in";
 	ifstream in1(fname1.c_str());
 
-	string fname2 = "map.in";
+	string fname2 = mapFile;
 	ifstream in2(fname2.c_str());
 
 	int numEnemies = 20;

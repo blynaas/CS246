@@ -111,7 +111,7 @@ void generateMapFile(string fileName)
 		count++;
 	}
 
-	ofstream fout("mapActual.in");
+	ofstream fout("mapWithChamberIDs.in");
 
 	for (int r = 0; r < MAXR; r++)
 	{
@@ -126,7 +126,14 @@ void generateMapFile(string fileName)
 
 int main(int argc,char *argv[])
 {
-	generateMapFile("map.in");
+	string mapFile = "defaultMap.in";
+
+	if (argc >= 2){
+		mapFile = argv[1];
+		cout << "You chose to load the non-default map called " << mapFile << endl;
+	}
+
+	generateMapFile(mapFile);
 
 	srand (time(NULL));
 	bool gameOver = false;
@@ -149,7 +156,7 @@ int main(int argc,char *argv[])
 		{
 			bool dead = false;
 			f = new Floor(floor);
-			f->init();
+			f->init(mapFile);
 			cout << (*f);
 			f->clearActions();
 			cout << "Command: "<<endl;
