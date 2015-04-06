@@ -4,6 +4,8 @@
 #include "character.h"
 #include "enemy.h"
 
+class Enemy;
+
 class Player : public Character {
 	static Player *pc; //singleton
 	static void cleanup(); //singleton

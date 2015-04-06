@@ -55,6 +55,9 @@ int main(int argc,char *argv[])
 					f->move(s);
 				}
 
+				f->enemiesAttack();
+				f->endTurn();
+
 				if(f->isOver() == 1) // check end conditions
 				{
 					cout << deathwords << endl;

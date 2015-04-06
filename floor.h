@@ -46,6 +46,7 @@ class Floor {
 	int pmove(char d1, char d2); // 1 means success, 0 means fail
 	Cell* emove(Cell *e); //enemy move
 	int attack(char d1, char d2);
+	void enemiesAttack();
 	int move(std::string d); // 1 means success, 0 means fail
 	void endTurn();
 	void moveEnemies();

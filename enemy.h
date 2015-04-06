@@ -3,6 +3,9 @@
 
 #include <string>
 #include "character.h"
+#include "player.h"
+
+class Player;
 
 class Enemy : public Character {
 	protected:
@@ -17,6 +20,7 @@ class Enemy : public Character {
 	int getHp() const;
 	void setMoved(bool val);
 	bool getMoved() const;
+	int attack(Player* p);
 	
 	virtual void notify();
 	virtual ~Enemy()=0;

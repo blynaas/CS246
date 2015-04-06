@@ -16,7 +16,7 @@ void TextDisplay::notify(int r, int c, char ch) {
 	theDisplay[r][c] = ch;
 }
 
-void TextDisplay::setAction(string ac) {action+=ac;}
+void TextDisplay::setAction(string ac) {action+=ac+" ";}
 
 void TextDisplay::clearAction() {action="";}
 

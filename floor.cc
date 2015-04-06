@@ -120,8 +120,28 @@ int Floor::move(string d) {
 		td->setAction("Target is occupied.");
 	}
 
-	endTurn();
 	return ret;
+}
+
+void Floor::enemiesAttack()
+{
+	
+	Cell** neighbours = theFloor[pr][pc]->getNeighbours();
+
+	for (int i = 0; i < 8; i++)
+	{
+		Cell* tempCell = neighbours[i];
+		if (tempCell->containsEnemy())
+		{
+			int damage = tempCell->getEnemy()->attack(Player::getPlayer());
+
+			stringstream ss;
+			ss << "Took " << damage << " damage from " << tempCell->getSym();
+			td->setAction(ss.str());
+
+			tempCell->getEnemy()->setMoved(true);
+		}
+	}
 }
 
 void Floor::endTurn()
@@ -216,8 +236,6 @@ int Floor::playerAttack(string d)
 	{
 		td->setAction("Nothing there to attack!");
 	}
-
-	endTurn();
 
 	return ret;
 }

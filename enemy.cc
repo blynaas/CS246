@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <math.h>
 #include "enemy.h"
 
 using namespace std;
@@ -16,6 +17,17 @@ int Enemy::getHp() const {return hp;}
 
 void Enemy::setMoved(bool val){movedThisTurn = val;}
 bool Enemy::getMoved() const {return movedThisTurn;}
+
+int Enemy::attack(Player* p)
+{
+	double defense = p->getDef();
+
+	int damage = ceil((100/(100+defense))*atk);
+
+	p->addHp((-1)*damage);
+
+	return damage;
+}
 
 void Enemy::notify() {}
 Enemy::~Enemy() {}
