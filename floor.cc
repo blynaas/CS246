@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <ncurses.h>
 #include <ctime>
 #include <fstream>
 #include <sstream>
@@ -49,6 +48,7 @@ void Floor::init()
 	ifstream in(fname.c_str());
 	int numEnemies = 20;
 	int numTreasure = 10;
+	int numPotions = 10;
 	int tnum=0;
 	int roomnum[NUMROOM];
 	for(int i=0; i<NUMROOM; i++) roomnum[i]=0;
@@ -65,16 +65,11 @@ void Floor::init()
 				tnum++;
 				roomnum[dec-'0']++;
 			}
-			crea(i, j, dec);
+			generateCell(i, j, dec);
 		}
 	}
-	for(int i=0; i<MAXR; i++)
-	{
-		for(int j=0; j<MAXC; j++)
-		{
-			linkCell(i, j);
-		}
-	}
+
+	linkCells();
 
 	//player
 	int row, col;
@@ -94,6 +89,12 @@ void Floor::init()
 			doorCell->setDoorway();
 			break;
 		}
+	}
+
+	//potions
+	for (int i = 0; i < numPotions; i++)
+	{
+		getRandomEmptyCell()->pushItem(new Potion(10));
 	}
 
 	//treasure
@@ -144,7 +145,6 @@ void Floor::init()
 		{
 			getRandomEmptyCell()->pushEnemy(new Merchant());
 		}
-
 	}
 
 	//notify the display
@@ -191,10 +191,12 @@ Cell* Floor::getRandomEmptyCell()
 	}
 }
 
-int Floor::move(string d) {
+int Floor::tryToMove(string d) {
 	Cell* ctmp = getTargetCell(d);
 
 	int ret = 0;
+
+	cout << ctmp->getType() << endl;
 
 	if(!ctmp)
 	{
@@ -210,7 +212,7 @@ int Floor::move(string d) {
 		viewCtrl->setAction("Whoa, a doorway.");
 		ret = 1;
 	}
-	else if (ctmp->getType() == "P" || (ctmp->getType() == "T" && ctmp->available()))
+	else if (ctmp->getType() == "P" || ctmp->getContain() == 'G' || (ctmp->getType() == "T" && ctmp->available()))
 	{
 		stringstream ss;
 		ss << "";
@@ -232,6 +234,30 @@ int Floor::move(string d) {
 	}
 
 	return ret;
+}
+
+void Floor::usePotion(string d)
+{
+	Cell* ctmp = getTargetCell(d);
+
+	if(!ctmp)
+	{
+		viewCtrl->setAction("Invalid command!");
+	}
+	else if (ctmp->getType() == "potion")
+	{
+		int healAmount = ctmp->getItem()->getPotionHeal();
+		Player::getPlayer()->addHp(healAmount);
+		ctmp->popItem();
+
+		stringstream ss;
+		ss << "Used a potion to the " << d << ", healed by " << healAmount << ".";
+		viewCtrl->setAction(ss.str());
+	}
+	else
+	{
+		viewCtrl->setAction("That ain't no potion!");
+	}
 }
 
 void Floor::enemiesAttack()
@@ -382,23 +408,29 @@ Cell* Floor::getTargetCell(string d)
 }
 
 
-void Floor::linkCell(int r, int c)
+void Floor::linkCells()
 {
-	if(r>0) {
-		if(c>0) theFloor[r][c]->addNeighbour(0, theFloor[r-1][c-1]);
-		theFloor[r][c]->addNeighbour(1, theFloor[r-1][c]);
-		if(c<MAXC-1) theFloor[r][c]->addNeighbour(2, theFloor[r-1][c+1]);
-	}
-	if(c>0) {theFloor[r][c]->addNeighbour(3, theFloor[r][c-1]);}
-	if(c<MAXC-1) {theFloor[r][c]->addNeighbour(4, theFloor[r][c+1]);}
-	if(r<MAXR-1) {
-		if(c>0) theFloor[r][c]->addNeighbour(5, theFloor[r+1][c-1]);
-		theFloor[r][c]->addNeighbour(6, theFloor[r+1][c]);
-		if(c<MAXC-1) theFloor[r][c]->addNeighbour(7, theFloor[r+1][c+1]);
+	for(int r=0; r<MAXR; r++)
+	{
+		for(int c=0; c<MAXC; c++)
+		{
+			if(r>0) {
+				if(c>0) theFloor[r][c]->addNeighbour(0, theFloor[r-1][c-1]);
+				theFloor[r][c]->addNeighbour(1, theFloor[r-1][c]);
+				if(c<MAXC-1) theFloor[r][c]->addNeighbour(2, theFloor[r-1][c+1]);
+			}
+			if(c>0) {theFloor[r][c]->addNeighbour(3, theFloor[r][c-1]);}
+			if(c<MAXC-1) {theFloor[r][c]->addNeighbour(4, theFloor[r][c+1]);}
+			if(r<MAXR-1) {
+				if(c>0) theFloor[r][c]->addNeighbour(5, theFloor[r+1][c-1]);
+				theFloor[r][c]->addNeighbour(6, theFloor[r+1][c]);
+				if(c<MAXC-1) theFloor[r][c]->addNeighbour(7, theFloor[r+1][c+1]);
+			}
+		}
 	}
 }
 
-void Floor::crea(int r, int c, char ch)
+void Floor::generateCell(int r, int c, char ch)
 {
 	if(ch=='|') theFloor[r][c] = new NonPathableTile(r, c, "E", "wall1");
 	else if(ch=='-') theFloor[r][c] = new NonPathableTile(r, c, "E", "wall2");

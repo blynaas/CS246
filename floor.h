@@ -1,55 +1,52 @@
-/* 
- * this will have a full 79*30 map
- * wall
- */
-
 #ifndef _GRID_H_
 #define _GRID_H_
 
 #include <iostream>
 #include "player.h"
 #include "cell.h"
+#include "nonpathabletile.h"
+#include "passagetile.h"
+#include "regulartile.h"
 #include "viewcontroller.h"
-
-//const int MAXR = 25;
-//const int MAXC = 79;
-//const int MAXMonster = 20;
 
 class Floor {
   
 	Cell *theFloor[MAXR][MAXC];
-	int moved[20][2];
 	ViewController *viewCtrl;
-	int over; //0:not over, 1:player passed away, 2:next floor, 3:win
-	int pr, pc; //locate the position of player
+	int over; //0: not over, 1: player dead, 2: next floor, 3: win
+	int pr, pc; // player's location
 
-	void clearFloor();   // Frees the floor.
+	void clearFloor();
 
-	public:
+public:
 	Floor(int f);
 	~Floor();
 
 	void clearAction();
-	//void obtainGold(Cell *p, Cell *g);
+
 	void movePlayer(Cell *s, Cell *e);
+	Cell* moveEnemy(Cell *e);
+	void moveEnemies();
+	int tryToMove(std::string d);
+	void endTurn();
+
 	int playerAttack(std::string d);
+	void enemiesAttack();
+
 	Cell* getTargetCell(std::string d);
+
+	void usePotion(std::string d);
+
 	int isOver() const;
 	void init();
-	void linkCell(int r, int c);
-	void crea(int r, int c, char ch);
-	int pmove(char d1, char d2); // 1 means success, 0 means fail
-	Cell* moveEnemy(Cell *e); //enemy move
-	int attack(char d1, char d2);
-	void enemiesAttack();
-	int move(std::string d); // 1 means success, 0 means fail
-	void endTurn();
+
+	void linkCells();
+	void generateCell(int r, int c, char ch);
+
 	Cell* getRandomEmptyCell(int* row, int* col);
 	Cell* getRandomEmptyCell();
-	void moveEnemies();
-	//void print();
-
 	
 	friend std::ostream &operator<<(std::ostream &out, const Floor &f);
 };
+
 #endif

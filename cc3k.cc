@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <sstream>
-#include <ncurses.h>
 #include "floor.h"	
 #include "character.h"
 #include "player.h"
@@ -51,9 +50,14 @@ int main(int argc,char *argv[])
 					cin >> s;
 					f->playerAttack(s);
 				}
+				if(s == "u")
+				{
+					cin >> s;
+					f->usePotion(s);
+				}
 				else 
 				{
-					f->move(s);
+					f->tryToMove(s);
 				}
 
 				f->enemiesAttack();
@@ -113,12 +117,11 @@ int main(int argc,char *argv[])
 				break;
 			}
 
-			Player::getPlayer()->clear();
 			floor++;
 
-			if(floor != 6)
+			if(floor < 6)
 			{
-				cout << "You have reached the floor " << floor << "." <<endl;
+				cout << "You have reached Floor " << floor << "." <<endl;
 			}
 
 			if(floor == 6)

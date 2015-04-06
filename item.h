@@ -3,18 +3,33 @@
 
 class Item
 {
+protected:
+	std::string type;
 public:
 	Item();
+	Item(std::string type);
 	virtual ~Item();
-	virtual int getGoldValue() = 0;
+	std::string getType();
+	virtual int getGoldValue();
+	virtual int getPotionHeal();
 };
 
-class Treasure : public Item {
+class Treasure : public Item
+{
 	int value;
 	public:
 	Treasure(int i);
 	~Treasure();
 	int getGoldValue();
+};
+
+class Potion : public Item
+{
+	int value;
+	public:
+	Potion(int i);
+	~Potion();
+	int getPotionHeal();
 };
 
 #endif
