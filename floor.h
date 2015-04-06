@@ -9,7 +9,8 @@
 #include "regulartile.h"
 #include "viewcontroller.h"
 
-class Floor {
+class Floor
+{
   
 	Cell *theFloor[MAXR][MAXC];
 	ViewController *viewCtrl;

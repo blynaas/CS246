@@ -7,12 +7,13 @@
 
 class Player;
 
-class Enemy : public Character {
-	protected:
+class Enemy : public Character
+{
+protected:
 	std::string type;
 	bool movedThisTurn;
 	Enemy(int hp, int atk, int def, std::string type);
-	public:
+public:
 	std::string getType() const;
 	void addHp(int i);
 	int getAtk() const;
@@ -26,38 +27,44 @@ class Enemy : public Character {
 	virtual ~Enemy()=0;
 };
 
-class Goblin : public Enemy {
-	public:
+class Goblin : public Enemy
+{
+public:
 	Goblin();
 	~Goblin();
 };
 
-class Troll : public Enemy {
-	public:
+class Troll : public Enemy
+{
+public:
 	Troll();
 	~Troll();
 };
 
-class Merchant : public Enemy {
-	public:
+class Merchant : public Enemy
+{
+public:
 	Merchant();
 	~Merchant();
 };
 
-class Werewolf : public Enemy {
-	public:
+class Werewolf : public Enemy
+{
+public:
 	Werewolf();
 	~Werewolf();
 };
 
-class Phoenix : public Enemy {
-	public:
+class Phoenix : public Enemy
+{
+public:
 	Phoenix();
 	~Phoenix();
 };
 
-class Vampire : public Enemy {
-	public:
+class Vampire : public Enemy
+{
+public:
 	Vampire();
 	~Vampire();
 };

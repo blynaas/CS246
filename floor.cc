@@ -15,9 +15,9 @@ Floor::Floor(int f) : over(0), pr(0), pc(0)
 {
 	viewCtrl = new ViewController(f, false);
 
-	for(int i=0; i<MAXR; i++)
+	for(int i = 0; i < MAXR; i++)
 	{
-		for(int j=0; j<MAXC; j++)
+		for(int j = 0; j < MAXC; j++)
 		{
 			theFloor[i][j]=0;
 		}
@@ -28,9 +28,9 @@ Floor::~Floor()
 {
 	delete viewCtrl;
 
-	for(int i=0; i<MAXR; i++)
+	for(int i = 0; i < MAXR; i++)
 	{
-		for(int j=0; j<MAXC; j++)
+		for(int j = 0; j < MAXC; j++)
 		{
 			delete theFloor[i][j];
 		}
@@ -55,12 +55,12 @@ void Floor::init()
 	int tmpnum=0;
 	char dec;
 
-	for(int i=0; i<MAXR; i++)
+	for(int i = 0; i < MAXR; i++)
 	{
-		for(int j=0; j<MAXC; j++)
+		for(int j = 0; j < MAXC; j++)
 		{
 			in >> dec;
-			if(dec>='0'&&dec<'5')
+			if(dec >= '0' && dec < '5')
 			{
 				tnum++;
 				roomnum[dec-'0']++;
@@ -148,9 +148,9 @@ void Floor::init()
 	}
 
 	//notify the display
-	for(int i=0; i<MAXR; i++)
+	for(int i = 0; i < MAXR; i++)
 	{
-		for(int j=0; j<MAXC; j++)
+		for(int j = 0; j < MAXC; j++)
 		{
 			theFloor[i][j]->notifyDisplay(*viewCtrl);
 		}
@@ -191,7 +191,8 @@ Cell* Floor::getRandomEmptyCell()
 	}
 }
 
-int Floor::tryToMove(string d) {
+int Floor::tryToMove(string d)
+{
 	Cell* ctmp = getTargetCell(d);
 
 	int ret = 0;
@@ -278,7 +279,7 @@ void Floor::enemiesAttack()
 			{
 				ss << tempCell->getSym() << " tried to attack, but missed.";
 			}
-			else //enemy didn't miss
+			else // enemy didn't miss
 			{
 				ss << "Took " << damage << " damage from " << tempCell->getSym() << ".";
 			}
@@ -346,8 +347,7 @@ void Floor::clearAction()
 void Floor::movePlayer(Cell *s, Cell *e)
 {
 	Cell **tmp = s->getNeighbours();
-	string ma[8] = {"North West", "North", "North East",
-	 "West", "East", "South West", "South", "South East"}; 
+
 	e->pushPlayer(s->popPlayer());
 	int m, n;
 	e->getPos(&m, &n);
@@ -395,14 +395,39 @@ Cell* Floor::getTargetCell(string d)
 {
 	Cell **tmp = theFloor[pr][pc]->getNeighbours();
 	Cell *ctmp = 0;
-	if(d=="nw") ctmp=tmp[0];
-	else if(d=="no") ctmp=tmp[1];
-	else if(d=="ne") ctmp=tmp[2];
-	else if(d=="we") ctmp=tmp[3];
-	else if(d=="ea") ctmp=tmp[4];
-	else if(d=="sw") ctmp=tmp[5];
-	else if(d=="so") ctmp=tmp[6];
-	else if(d=="se") ctmp=tmp[7];
+
+	if(d=="nw")
+	{
+		ctmp=tmp[0];
+	}
+	else if(d=="no")
+	{
+		ctmp=tmp[1];
+	}
+	else if(d=="ne")
+	{
+		ctmp=tmp[2];
+	}
+	else if(d=="we")
+	{
+		ctmp=tmp[3];
+	}
+	else if(d=="ea")
+	{
+		ctmp=tmp[4];
+	}
+	else if(d=="sw")
+	{
+		ctmp=tmp[5];
+	}
+	else if(d=="so")
+	{
+		ctmp=tmp[6];
+	}
+	else if(d=="se")
+	{
+		ctmp=tmp[7];
+	}
 
 	return ctmp;
 }

@@ -7,8 +7,9 @@
 #include "cell.h"
 #include "viewcontroller.h"
 
-class NonPathableTile : public Cell {
-	public:
+class NonPathableTile : public Cell
+{
+public:
 	NonPathableTile(int r, int c, std::string type, std::string name);
 	~NonPathableTile();
 

@@ -6,17 +6,33 @@
 
 using namespace std;
 
-Cell::Cell (int r, int c, std::string type, std::string name) : 
-type(type), name(name), numNeighbours(0), sym(0), r(r), c(c) {neighbours=0;}
+Cell::Cell (int r, int c, std::string type, std::string name) : type(type), name(name), numNeighbours(0), sym(0), r(r), c(c)
+{
+	neighbours = 0;
+}
 
-string Cell::getType() const {return type;}
+string Cell::getType() const
+{
+	return type;
+}
 
-char Cell::getSym() const {return sym;}
+char Cell::getSym() const
+{
+	return sym;
+}
 
-void Cell::getPos(int *a, int *b) {*a=r; *b=c;}
+void Cell::getPos (int *a, int *b)
+{
+	*a=r; *b=c;
+}
 
-void Cell::addNeighbour(int po, Cell *neighbour) {
-	if(!neighbours) neighbours = new Cell *[maxNeighbours];
+void Cell::addNeighbour(int po, Cell *neighbour)
+{
+	if (!neighbours)
+	{
+		neighbours = new Cell *[maxNeighbours];
+	}
+	
 	neighbours[po]=neighbour;
 	numNeighbours++;
 }

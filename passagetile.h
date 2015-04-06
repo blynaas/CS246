@@ -7,9 +7,10 @@
 #include "item.h"
 #include "viewcontroller.h"
 
-class PassageTile : public Cell {
+class PassageTile : public Cell
+{
 	Player *p;
-	public:
+public:
 	PassageTile(int r, int c, std::string type, std::string name);
 	~PassageTile();
 	

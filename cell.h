@@ -9,9 +9,10 @@
 
 const int maxNeighbours = 8;
 
-class Cell {
-	protected:	
-	std::string type; // wall1("|"), wall2("-"), PassageTile1("+"), PassageTile2("#"), doorway("\"), RegularTile(".")
+class Cell
+{
+protected:	
+	std::string type;
 	const std::string name;
 	char sym;
 	int numNeighbours;
@@ -19,7 +20,7 @@ class Cell {
 	int r, c;
 	Cell(int r, int c, std::string type, std::string name);
 	
-	public:
+public:
 	std::string getType() const;
 	char getSym() const;
 	void getPos(int *a, int *b);
@@ -41,7 +42,7 @@ class Cell {
 	virtual void pushItem(Item *i);
 	virtual Item *getItem() const;
 	virtual Item *popItem();
-	virtual ~Cell()=0;
+	virtual ~Cell() = 0;
 };
 
 #endif

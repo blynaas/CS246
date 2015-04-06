@@ -4,8 +4,7 @@
 #include "character.h"
 using namespace std;
 
-Character::Character(int hp, int atk, int def) 
-: hp(hp), atk(atk), def(def), gold(0) {}
+Character::Character(int hp, int atk, int def) : hp(hp), atk(atk), def(def), gold(0) {}
 
 double Character::getGold() const {return gold;}
 

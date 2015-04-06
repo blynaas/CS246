@@ -7,7 +7,8 @@
 #include "item.h"
 #include "viewcontroller.h"
 
-class RegularTile : public Cell {
+class RegularTile : public Cell
+{
 	const int room;
 	Player *p;
 	Enemy *e;

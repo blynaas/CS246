@@ -5,14 +5,16 @@
 
 using namespace std;
 
-class Character {
-	protected:
+class Character
+{
+protected:
 	int hp;
 	int atk;
 	int def;
 	double gold;
 	Character(int hp, int atk, int def);
-	public:
+	
+public:
 	double getGold() const;
 	int getHp() const;
 	

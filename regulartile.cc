@@ -7,7 +7,8 @@
 
 using namespace std;
 
-RegularTile::RegularTile(int r, int c, int room) :  Cell(r, c, "T", "RegularTile"), room(room) {
+RegularTile::RegularTile(int r, int c, int room) :  Cell(r, c, "T", "RegularTile"), room(room)
+{
 	sym = '.';
 	avail = true;
 	p=0;e=0;
@@ -16,29 +17,52 @@ RegularTile::RegularTile(int r, int c, int room) :  Cell(r, c, "T", "RegularTile
 	for(int j=0; j<maxNeighbours; j++) neighbours[j]=0;
 }
 
-RegularTile::~RegularTile() {delete e;}
+RegularTile::~RegularTile()
+{
+	delete e;
+}
 
-void RegularTile::notifyDisplay(ViewController &viewCtrl) {
+void RegularTile::notifyDisplay(ViewController &viewCtrl)
+{
 	viewCtrl.notify(r, c, sym);
 }
 
-bool RegularTile::available() const {return avail&&!(p||e);}
+bool RegularTile::available() const
+{
+	return avail && !p && !e;
+}
 
-void RegularTile::setDoorway() {avail = false; sym = '\\'; type = "D";}
+void RegularTile::setDoorway()
+{
+	avail = false;
+	sym = '\\';
+	type = "D";
+}
 
-char RegularTile::getContain() const {return contain;}
+char RegularTile::getContain() const
+{
+	return contain;
+}
 
-int RegularTile::getRoom() const {return room;}
+int RegularTile::getRoom() const
+{
+	return room;
+}
 
-void RegularTile::pushPlayer(Player *p) {
+void RegularTile::pushPlayer(Player *p)
+{
 	this->p = p;
 	sym = '@';
 	contain = sym;
 }
 
-Player *RegularTile::getPlayer() const {return p;}
+Player *RegularTile::getPlayer() const
+{
+	return p;
+}
 
-Player *RegularTile::popPlayer() {
+Player *RegularTile::popPlayer()
+{
 	Player *tmp=p;
 	p=0;
 	sym = '.';
@@ -46,7 +70,8 @@ Player *RegularTile::popPlayer() {
 	return tmp;
 }
 
-void RegularTile::pushEnemy(Enemy *e) {
+void RegularTile::pushEnemy(Enemy *e)
+{
 	this->e = e;
 	string tmpType = e->getType();
 	if(tmpType=="vampire") sym = 'V';
@@ -60,9 +85,13 @@ void RegularTile::pushEnemy(Enemy *e) {
 	else contain = 'E';
 }
 
-Enemy *RegularTile::getEnemy() const {return e;}
+Enemy *RegularTile::getEnemy() const
+{
+	return e;
+}
 
-Enemy *RegularTile::popEnemy() {
+Enemy *RegularTile::popEnemy()
+{
 	Enemy *tmp = e;
 	e=0;
 	sym = '.';
@@ -70,7 +99,8 @@ Enemy *RegularTile::popEnemy() {
 	return tmp;
 }
 
-void RegularTile::pushItem(Item *i) {
+void RegularTile::pushItem(Item *i) 
+{
 	this->i = i;
 	type = i->getType();
 
@@ -85,9 +115,13 @@ void RegularTile::pushItem(Item *i) {
 	contain = sym;
 }
 
-Item *RegularTile::getItem() const {return i;}
+Item *RegularTile::getItem() const
+{
+	return i;
+}
 
-Item *RegularTile::popItem() {
+Item *RegularTile::popItem()
+{
 	Item *tmp = i;
 	i=0;
 	sym = '.';

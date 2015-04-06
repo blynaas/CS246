@@ -6,7 +6,8 @@
 
 class Enemy;
 
-class Player : public Character {
+class Player : public Character
+{
 	static Player *pc;
 	static void cleanup();
 protected:
@@ -14,7 +15,6 @@ protected:
 	Player(int hp, int atk, int def, std::string race);
 	
 public:
-
 	static Player *getPlayer();
 
 	static void setPlayer(std::string race);
@@ -28,30 +28,34 @@ public:
 	int getAtk() const;
 	int getDef() const;
 	int attack(Enemy* e);
-	
+
 	virtual ~Player()=0;
 };
 
-class Human : public Player {
+class Human : public Player
+{
 	public:
 	Human();
 	~Human();
 };
 
-class Dwarf : public Player {
+class Dwarf : public Player
+{
 	public:
 		Dwarf();
 		~Dwarf();
 		int addGold(int i);
 };
 
-class Elf : public Player {
+class Elf : public Player
+{
 	public:
 		Elf();
 		~Elf();
 };
 
-class Orc : public Player {
+class Orc : public Player
+{
 	public:
 		Orc();
 		~Orc();

@@ -7,32 +7,52 @@
 
 using namespace std;
 
-PassageTile::PassageTile(int r, int c, string type, string name) : Cell(r, c, type, name){
+PassageTile::PassageTile(int r, int c, string type, string name) : Cell(r, c, type, name)
+{
 	neighbours = new Cell *[maxNeighbours];
-	for(int i=0; i<maxNeighbours; i++) neighbours[i]=0;
-	if(name=="pass1") sym = '+';
-	else if(name=="pass2") sym = '#';
+	for (int i=0; i<maxNeighbours; i++)
+	{
+		neighbours[i] = 0;
+	}
+	if (name == "pass1")
+	{
+		sym = '+';
+	}
+	else if (name == "pass2")
+	{
+		sym = '#';
+	}
 }
 
 PassageTile::~PassageTile() {}
 
-void PassageTile::notifyDisplay(ViewController &viewCtrl) {
+void PassageTile::notifyDisplay(ViewController &viewCtrl)
+{
 	viewCtrl.notify(r, c, sym);
 }
 
-void PassageTile::pushPlayer(Player *p) {
+void PassageTile::pushPlayer(Player *p)
+{
 	this->p = p;
 	sym = '@';
 }
 
-Player *PassageTile::getPlayer() const {
+Player *PassageTile::getPlayer() const
+{
 	return p;
 }
 
-Player *PassageTile::popPlayer() {
+Player *PassageTile::popPlayer()
+{
 	Player *tmp = p;
 	p = 0;
-	if(name=="pass1") sym = '+';
-	else if(name=="pass2") sym = '#';
+	if (name == "pass1")
+	{
+		sym = '+';
+	}
+	else if (name == "pass2")
+	{
+		sym = '#';
+	}
 	return tmp;
 }

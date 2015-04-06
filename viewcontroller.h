@@ -11,7 +11,8 @@ const int MAXR=25;
 const int MAXC=79;
 const int NUMROOM=5;
 
-class ViewController {
+class ViewController
+{
 	char theDisplay[MAXR][MAXC]; //save the display version of a floor
 	std::string action; //save the information that will be shown after "action:"
 	Player *p; //an pointer to player to gain information
