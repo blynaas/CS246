@@ -14,6 +14,7 @@ class Floor
   
 	Cell *theFloor[MAXR][MAXC];
 	ViewController *viewCtrl;
+	bool hasDoor, hasPlayer;
 	int roomCount;
 	int over; //0: not over, 1: player dead, 2: next floor, 3: win
 	int pr, pc; // player's location

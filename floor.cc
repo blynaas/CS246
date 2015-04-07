@@ -15,6 +15,9 @@ Floor::Floor(int f) : over(0), pr(0), pc(0)
 	roomCount=0;
 	viewCtrl = new ViewController(f);
 
+	hasDoor = false;
+	hasPlayer = false;
+
 	for(int i = 0; i < MAXR; i++)
 	{
 		for(int j = 0; j < MAXC; j++)
@@ -82,6 +85,22 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 		theFloor[r][c]->pushItem(new Treasure(2));
 		roomCount = max(roomCount,chamber+1);
 	}
+	else if (ch=='@')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushPlayer(Player::getPlayer());
+		pr = r;
+		pc = c;
+		hasPlayer = true;
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='\\')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->setDoorway();
+		hasDoor = true;
+		roomCount = max(roomCount,chamber+1);
+	}
 	else
 	{
 		theFloor[r][c] = new RegularTile(r,c,chamber);
@@ -122,21 +141,31 @@ void Floor::init(string mapFile)
 
 	//player
 	int row, col;
-
 	Cell* playerCell = getRandomEmptyCell(&row, &col);
-	playerCell->pushPlayer(Player::getPlayer());
-	pr = row;
-	pc = col;
+
+	if (!hasPlayer)
+	{
+		playerCell->pushPlayer(Player::getPlayer());
+		pr = row;
+		pc = col;
+	}
+	else
+	{
+		playerCell = theFloor[pr][pc];
+	}
 
 	//doorway
-	while(true)
+	if (!hasDoor)
 	{
-		Cell* doorCell = getRandomEmptyCell();
-
-		if (doorCell->getRoom() != playerCell->getRoom())
+		while(true)
 		{
-			doorCell->setDoorway();
-			break;
+			Cell* doorCell = getRandomEmptyCell();
+
+			if (doorCell->getRoom() != playerCell->getRoom())
+			{
+				doorCell->setDoorway();
+				break;
+			}
 		}
 	}
 
@@ -266,7 +295,7 @@ int Floor::tryToMove(string d)
 		ss << "";
 		if (ctmp->getContain() == 'G')
 		{
-			int value = ctmp->getItem()->getGoldValue();
+			int value = ctmp->popItem()->getGoldValue();
 			value = Player::getPlayer()->addGold(value);
 			ss << "PC obtained " << value << " gold!";
 		}

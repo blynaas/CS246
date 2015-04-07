@@ -82,6 +82,14 @@ void generateMapFile(string fileName)
 			{
 				theMap[r][c] = '.';
 			}
+			if (theMap[r][c] == '@')
+			{
+				theMap[r][c] = '.';
+			}
+			if (theMap[r][c] == '\\')
+			{
+				theMap[r][c] = '.';
+			}
 		}
 	}
 
