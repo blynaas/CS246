@@ -98,6 +98,12 @@ Merchant::Merchant() : Enemy(30, 70, 5, "merchant")
 }
 Merchant::~Merchant() {}
 
+Dragon::Dragon() : Enemy(150, 20, 20, "dragon")
+{
+	gold=0;
+}
+Dragon::~Dragon() {}
+
 Phoenix::Phoenix() : Enemy(50, 35, 20, "phoenix")
 {
 	gold=1;

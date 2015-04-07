@@ -39,7 +39,7 @@ void Cell::addNeighbour(int po, Cell *neighbour)
 
 bool Cell::containsEnemy()
 {
-	return sym == 'N' || sym == 'T' || sym == 'W' || sym == 'V' || sym == 'M' || sym == 'X'; //TODO: make this function less stupid
+	return sym == 'N' || sym == 'T' || sym == 'W' || sym == 'V' || sym == 'M' || sym == 'X' || sym == 'D'; //TODO: make this function less stupid
 }
 
 Cell **Cell::getNeighbours() const {return neighbours;}

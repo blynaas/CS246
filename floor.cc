@@ -67,7 +67,7 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 	{
 		theFloor[r][c] = new PassageTile(r, c, "P", "pass2");
 	}
-	else if (ch=='0')
+	else if (ch>='0' && ch<='5')
 	{
 		theFloor[r][c] = new RegularTile(r,c,chamber);
 		theFloor[r][c]->pushItem(new Potion(10));
@@ -79,7 +79,7 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 		theFloor[r][c]->pushItem(new Treasure(1));
 		roomCount = max(roomCount,chamber+1);
 	}
-	else if (ch=='7')
+	else if (ch>='7' && ch<='9')
 	{
 		theFloor[r][c] = new RegularTile(r,c,chamber);
 		theFloor[r][c]->pushItem(new Treasure(2));
@@ -111,8 +111,8 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 	}
 	else if (ch=='D')
 	{
-		//nothing lol
 		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Dragon());
 		roomCount = max(roomCount,chamber+1);
 	}
 	else if (ch=='M')

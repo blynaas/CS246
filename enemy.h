@@ -48,6 +48,13 @@ public:
 	~Merchant();
 };
 
+class Dragon : public Enemy
+{
+public:
+	Dragon();
+	~Dragon();
+};
+
 class Werewolf : public Enemy
 {
 public:

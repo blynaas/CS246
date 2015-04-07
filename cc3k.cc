@@ -89,6 +89,7 @@ void generateMapFile(string fileName)
 				theMap[r][c] == 'V' ||
 				theMap[r][c] == 'T' ||
 				theMap[r][c] == 'P' ||
+				theMap[r][c] == 'D' ||
 				theMap[r][c] == '@')
 			{
 				theMap[r][c] = '.';
@@ -158,6 +159,12 @@ int main(int argc,char *argv[])
 		cout << "Choose your race! Enter h, d, e, or o for human, dwarf, elf, or orc." << endl;
 
 		cin >> s;
+
+		if (cin.eof())
+		{
+			gameOver = true;
+			break;
+		}
 
 		Player::setPlayer(s);
 
