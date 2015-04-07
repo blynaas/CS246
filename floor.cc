@@ -85,6 +85,48 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 		theFloor[r][c]->pushItem(new Treasure(2));
 		roomCount = max(roomCount,chamber+1);
 	}
+	else if (ch=='T')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Troll());
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='X')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Phoenix());
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='N')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Goblin());
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='W')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Werewolf());
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='D')
+	{
+		//nothing lol
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='M')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Merchant());
+		roomCount = max(roomCount,chamber+1);
+	}
+	else if (ch=='V')
+	{
+		theFloor[r][c] = new RegularTile(r,c,chamber);
+		theFloor[r][c]->pushEnemy(new Vampire());
+		roomCount = max(roomCount,chamber+1);
+	}
 	else if (ch=='@')
 	{
 		theFloor[r][c] = new RegularTile(r,c,chamber);
@@ -110,6 +152,10 @@ void Floor::generateCell(int r, int c, char ch, int chamber)
 
 void Floor::init(string mapFile)
 {
+	bool readFile;
+
+	readFile = !(mapFile == "defaultMap.in");
+
 	string fname1 = "mapWithChamberIDs.in";
 	ifstream in1(fname1.c_str());
 
@@ -122,6 +168,8 @@ void Floor::init(string mapFile)
 
 	char dec;
 	char chamber;
+
+	//cout << "shit" << endl;
 
 	for(int i = 0; i < MAXR; i++)
 	{
@@ -137,91 +185,101 @@ void Floor::init(string mapFile)
 		}
 	}
 
+	//cout << "shit" << endl;
+
 	linkCells();
 
-	//player
-	int row, col;
-	Cell* playerCell = getRandomEmptyCell(&row, &col);
+	if (!readFile)
+	{
 
-	if (!hasPlayer)
-	{
-		playerCell->pushPlayer(Player::getPlayer());
-		pr = row;
-		pc = col;
-	}
-	else
-	{
-		playerCell = theFloor[pr][pc];
-	}
+		//player
+		int row, col;
+		Cell* playerCell = getRandomEmptyCell(&row, &col);
 
-	//doorway
-	if (!hasDoor)
-	{
-		while(true)
+		if (!hasPlayer)
 		{
-			Cell* doorCell = getRandomEmptyCell();
+			playerCell->pushPlayer(Player::getPlayer());
+			pr = row;
+			pc = col;
+		}
+		else
+		{
+			playerCell = theFloor[pr][pc];
+		}
 
-			if (doorCell->getRoom() != playerCell->getRoom())
+		//cout << "shit" << endl;
+
+		//doorway
+		if (!hasDoor)
+		{
+			while(true)
 			{
-				doorCell->setDoorway();
-				break;
+				Cell* doorCell = getRandomEmptyCell();
+
+				if (doorCell->getRoom() != playerCell->getRoom())
+				{
+					doorCell->setDoorway();
+					break;
+				}
 			}
 		}
-	}
 
-	//potions
-	for (int i = 0; i < numPotions; i++)
-	{
-		getRandomEmptyCell()->pushItem(new Potion(10));
-	}
+		//cout << "shit" << endl;
 
-	//treasure
-	for (int i = 0; i < numTreasure; i++)
-	{
-		int rnd = rand()%8;
+		//potions
+		for (int i = 0; i < numPotions; i++)
+		{
+			getRandomEmptyCell()->pushItem(new Potion(10));
+		}
 
-		if (rnd <= 4)
+		//treasure
+		for (int i = 0; i < numTreasure; i++)
 		{
-			getRandomEmptyCell()->pushItem(new Treasure(1));
-		}
-		else if (rnd <= 6)
-		{
-			getRandomEmptyCell()->pushItem(new Treasure(2));
-		}
-		else if (rnd == 7)
-		{
-			// dragon hoard here, if you ever end up doing it
-		}
-	}
+			int rnd = rand()%8;
 
-	//enemies
-	for (int i = 0; i < numEnemies; i++)
-	{
-		int rnd = rand()%18;
+			if (rnd <= 4)
+			{
+				getRandomEmptyCell()->pushItem(new Treasure(1));
+			}
+			else if (rnd <= 6)
+			{
+				getRandomEmptyCell()->pushItem(new Treasure(2));
+			}
+			else if (rnd == 7)
+			{
+				// dragon hoard here, if you ever end up doing it
+			}
+		}
 
-		if (rnd <= 3)
+		//enemies
+		for (int i = 0; i < numEnemies; i++)
 		{
-			getRandomEmptyCell()->pushEnemy(new Werewolf());
-		}
-		else if (rnd <= 6)
-		{
-			getRandomEmptyCell()->pushEnemy(new Vampire());
-		}
-		else if (rnd <= 11)
-		{
-			getRandomEmptyCell()->pushEnemy(new Goblin());
-		}
-		else if (rnd <= 13)
-		{
-			getRandomEmptyCell()->pushEnemy(new Troll());
-		}
-		else if (rnd <= 15)
-		{
-			getRandomEmptyCell()->pushEnemy(new Phoenix());
-		}
-		else if (rnd <= 17)
-		{
-			getRandomEmptyCell()->pushEnemy(new Merchant());
+			int rnd = rand()%18;
+
+			if (rnd <= 3)
+			{
+				getRandomEmptyCell()->pushEnemy(new Werewolf());
+			}
+			else if (rnd <= 6)
+			{
+				getRandomEmptyCell()->pushEnemy(new Vampire());
+			}
+			else if (rnd <= 11)
+			{
+				getRandomEmptyCell()->pushEnemy(new Goblin());
+			}
+			else if (rnd <= 13)
+			{
+				getRandomEmptyCell()->pushEnemy(new Troll());
+			}
+			else if (rnd <= 15)
+			{
+				getRandomEmptyCell()->pushEnemy(new Phoenix());
+			}
+			else if (rnd <= 17)
+			{
+				getRandomEmptyCell()->pushEnemy(new Merchant());
+			}
 		}
 	}
 
